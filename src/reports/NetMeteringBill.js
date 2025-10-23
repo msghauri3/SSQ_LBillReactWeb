@@ -548,7 +548,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           },
         },
         {
-          content: "Quries regarding electric bills dia      ",
+          content: "Quries regarding electric bills dial      ",
           styles: {
             lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 },
             halign: "right",
