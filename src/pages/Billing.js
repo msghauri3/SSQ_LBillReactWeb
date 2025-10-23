@@ -17,8 +17,9 @@ import {
 import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { generateElectricityPDF } from "../reports/ElectricityBill";
+// import { generateElectricityPDF } from "../reports/ElectricityBill";
 import { generateMaintenancePDF } from "../reports/MaintenanceBill"; 
+import { generateNetMeteringPDF } from "../reports/NetMeteringBill"; 
 
 const Billing = () => {
   const [billingData, setBillingData] = useState({
@@ -138,10 +139,16 @@ const Billing = () => {
       //   }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
 
 
-      const apiUrl = `http://172.20.228.2/api/${billingData.billingType === "electricity" ? "ElectricityBill" : "MaintenanceBill"
-        }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
+      // const apiUrl = `http://172.20.228.2/api/${billingData.billingType === "electricity" ? "ElectricityBill" : "MaintenanceBill"
+      //   }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
 
-      console.log("🌐 API URL:", apiUrl);
+
+      
+      const apiUrl = `https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api/${billingData.billingType === "electricity" ? "ElectricityBill" : "MaintenanceBill"
+        }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
+      
+      
+      // console.log("🌐 API URL:", apiUrl);
 
       const response = await fetch(apiUrl);
 
@@ -154,13 +161,14 @@ const Billing = () => {
       if (!response.ok) throw new Error("Failed to fetch bill data");
 
       const data = await response.json();
-      console.log("✅ API Response:", data);
+      // console.log("✅ API Response:", data);
 
       if (!data || data.length === 0) {
         setError("No bill found for this BTNo and Project.");
       } else {
         if (billingData.billingType === "electricity") {
-          generateElectricityPDF(data, projects);
+          // generateElectricityPDF(data, projects);
+          generateNetMeteringPDF(data, projects);
         } else {
           generateMaintenancePDF(data, projects);
         }

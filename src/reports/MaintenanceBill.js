@@ -29,7 +29,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
         { content: "", rowSpan: 5, styles: { valign: "middle" } },
         {
           content:
-            "BAHRIA TOWN PVT-SERVICES & MAINTENANCE",
+            "BAHRIA TOWN PVT LTD - SERVICES & MAINTENANCE",
           colSpan: 4,
           styles: {
             lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0.1 },
@@ -372,7 +372,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
 
 
       [
-        { content: `${maintenanceBills.billingMonth}`, colSpan: 2, styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
+        { content: `${maintenanceBills.billingMonth} ${maintenanceBills.billingYear}`, colSpan: 2, styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
         { content: formatDate(maintenanceBills.dueDate), styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
         { content: "PAYMENT AFTER DUE DATE", styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
         { content: `${maintenanceBills.billAmountAfterDueDate}`, styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
@@ -433,7 +433,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
 
 
       [
-        { content: `${maintenanceBills.billingMonth}`, colSpan: 2, styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
+        { content: `${maintenanceBills.billingMonth} ${maintenanceBills.billingYear}`, colSpan: 2, styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
         { content: formatDate(maintenanceBills.dueDate), styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
         { content: "PAYMENT AFTER DUE DATE", styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
         { content: `${maintenanceBills.billAmountAfterDueDate}`, styles: { fontStyle: "normal", fontSize: 7, halign: "left" } },
@@ -553,25 +553,19 @@ export const generateMaintenancePDF = (billingData, projects) => {
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 
-  // ✅ Emoji favicon (🧰 Maintenance emoji)
-  const emoji = "🧰";
-
-  // ✅ Create favicon as SVG (so it's clean and crisp)
-  const faviconSvg = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-    <text y=".9em" font-size="90">${emoji}</text>
-  </svg>
-`;
-  const faviconDataUrl = `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`;
+  // ✅ Replace emoji favicon with PNG from public folder
+  // (make sure "logo.png" exists inside "public")
+  // const faviconUrl = `${window.location.origin}/bag.png`;
+  // const faviconUrl = "bag.png";
 
   // ✅ HTML structure
   const html = `
-  <html>
+<html>
   <head>
     <title>${fileName.replace(".pdf", "")}</title>
 
-    <!-- Emoji favicon -->
-    <link rel="icon" href="${faviconDataUrl}" type="image/svg+xml" />
+    <!-- PNG favicon -->
+    <link rel="icon" type="image/png" href="bag.png" />
 
     <style>
       body {
@@ -582,7 +576,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
       .download-btn {
         position: fixed;
         top: 7px;
-        right: 125px;
+        right: 95px;
         background: #1976d2;
         color: white;
         padding: 10px 18px;
@@ -606,8 +600,8 @@ export const generateMaintenancePDF = (billingData, projects) => {
       window.addEventListener('unload', () => URL.revokeObjectURL("${blobUrl}"));
     </script>
   </body>
-  </html>
-  `;
+</html>
+`;
 
   const newTab = window.open();
   newTab.document.open();

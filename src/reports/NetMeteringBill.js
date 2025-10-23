@@ -1,7 +1,6 @@
 // src/reports/ElectricityBill.js
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import JsBarcode from "jsbarcode";
 
 // ✅ Reusable date formatting function
 const formatDate = (dateString) => {
@@ -11,7 +10,7 @@ const formatDate = (dateString) => {
     .replace(/ /g, "-");
 };
 
-export const generateElectricityPDF = (billingData, projects) => {
+export const generateNetMeteringPDF = (billingData, projects) => {
   // 🔹 Step 1: Extract both objects from API response
   const { electricityBill, customerDetail, billHistory } = billingData;
 
@@ -20,21 +19,6 @@ export const generateElectricityPDF = (billingData, projects) => {
   const doc = new jsPDF("p", "mm", "a4");
 
   
-
-  // Generate Barcode
-  const canvas = document.createElement("canvas");
-  JsBarcode(
-    canvas,
-    `${electricityBill.btNo}${electricityBill.billingMonth}${electricityBill.billingYear}`,
-    {
-      format: "CODE39",
-      displayValue: true,
-      fontSize: 14,
-    }
-  );
-  const imgData = canvas.toDataURL("image/png");
-  doc.addImage(imgData, "PNG", 70, 272, 70, 14);
-
   //Header
   autoTable(doc, {
     head: [],
@@ -48,7 +32,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           },
         },
         {
-          content: "BAHRIA TOWN PVT LTD - ELECTRICITY BILL",
+          content: "BAHRIA TOWN PVT LTD - NET METER ELECTRICITY BILL",
           colSpan: 6,
           styles: {
             lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0.1 },
@@ -140,7 +124,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       ],
     ],
     theme: "plain",
-    // margin: { top: 10 },
+    margin: { top: 10 },
     bodyStyles: {
       fillColor: false,
       textColor: [0, 0, 0],
@@ -198,6 +182,8 @@ export const generateElectricityPDF = (billingData, projects) => {
     },
   });
   let headerY = doc.lastAutoTable.finalY;
+   doc.addImage("urdumessage1.jpeg", "JPEG", 15, headerY + 53, 110, 23);
+   doc.addImage("urdumessage2.png", "PNG", 25, headerY + 76, 96, 18);
 
   //Body-1
   autoTable(doc, {
@@ -208,7 +194,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         { content: "Bar Code No", styles: {} },
         { content: "Tariff", styles: {} },
         { content: "Conn Date", styles: {} },
-        { content: "Bank Account No (BTL Branch)", colSpan: 2, styles: {} },
+        { content: "Bank Account No (BTL Branch)", colSpan: 3, styles: {} },
         { content: "  Electricity", styles: { halign: "left" } },
       ],
       [
@@ -226,7 +212,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "",
-          colSpan: 2,
+          colSpan: 3,
           rowSpan: 3,
           styles: {
             lineWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0 },
@@ -234,7 +220,7 @@ export const generateElectricityPDF = (billingData, projects) => {
             fontSize: 10,
           },
         },
-        { content: "", rowSpan: 9, styles: {} },
+        { content: "", rowSpan: 13, styles: {} },
       ],
       [
         {
@@ -270,34 +256,92 @@ export const generateElectricityPDF = (billingData, projects) => {
         { content: "PRESENT", styles: {} },
         { content: "UNITS", styles: {} },
         { content: "MDI Reading", styles: {} },
+        { content: "Status", styles: {} }
       ],
       [
         {
           content: `${electricityBill.meterNo}`,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0.1 } },
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
           content: `${electricityBill.previousReading1}`,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0 } },
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
           content: `${electricityBill.currentReading1}`,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0 } },
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
           content: `${electricityBill.difference1}`,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0 } },
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
           content: "",
-          styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0 } },
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
+        {
+          content: "(P) Import Units  ",
+          styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 } },
+        }
+      ],
+      [
+        {
+          content: ``,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
+        },
+        {
+          content: `${electricityBill.previousReading1}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: `${electricityBill.currentReading1}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: `${electricityBill.difference1}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: "",
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: "(OP) Import Units",
+          styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
+        }
+      ],
+      [
+        {
+          content: ``,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 } },
+        },
+        {
+          content: `${electricityBill.previousReading1}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
+        },
+        {
+          content: `${electricityBill.currentReading1}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
+        },
+        {
+          content: `${electricityBill.difference1}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
+        },
+        {
+          content: "",
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
+        },
+        {
+          content: "(OP) Export Units",
+          styles: { lineWidth: { top: 0, right: 0.1, bottom: 0.1, left: 0 } },
+        }
       ],
       [
         { content: "Units", styles: {} },
         { content: "Rate", styles: {} },
         { content: "Amount", styles: {} },
-        { content: "Deferred Amount", colSpan: 2, styles: {} },
+        { content: "", styles: {} },
+        { content: "Units Consumed", colSpan: 2, styles: {} },
       ],
       [
         {
@@ -312,16 +356,43 @@ export const generateElectricityPDF = (billingData, projects) => {
           content: `${electricityBill.unitsAmount}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
+         {
+          content: `Import Units`,
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
+        },
         {
-          content: "0",
+          content: "",
           colSpan: 2,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
       ],
       [
         {
+          content: `${electricityBill.totalUnit}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
+        },
+        {
+          content: "51.5",
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: `${electricityBill.unitsAmount}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+         {
+          content: `Export Units`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
           content: "",
-          colSpan: 5,
+          colSpan: 2,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+      ],
+      [
+        {
+          content: "",
+          colSpan: 6,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0.1 } },
         },
       ],
@@ -329,7 +400,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         {
           content:
             "Complaint Office (Mohlanwal) 042-35341646\nComplaint Office (Orchard)     042-35470996   042-35470997\nComplaint Office (Nasheman) 042-35935515",
-          colSpan: 5,
+          colSpan: 6,
           styles: {
             lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 },
             cellPadding: 0.5,
@@ -352,7 +423,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       0: { cellWidth: 20 },
       1: { cellWidth: 20 },
       2: { cellWidth: 20 },
-      5: { cellWidth: 65 },
+      6: { cellWidth: 65 },
     },
     // didParseCell: function (data) {
     //   if (data.section === "body") {
@@ -399,7 +470,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       const setCell = (styles) => Object.assign(cell.styles, styles);
 
       // Header-style rows (black background)
-      if (r === 0 || r === 4 || r === 6) {
+      if (r === 0 || r === 4 || r === 8) {
         setCell({
           minCellHeight: 3,
           fontSize: 8,
@@ -419,11 +490,11 @@ export const generateElectricityPDF = (billingData, projects) => {
           valign: "top",
         });
       }
-      if (r === 5 || r === 7) {
+      if ((r >= 5 && r <= 7)|| (r >= 9 && r <=10)) {
         setCell({
-          minCellHeight: 6,
+          // minCellHeight: 6,
           fontSize: 8,
-          cellPadding: { top: 1 },
+          cellPadding: { top: 0.2 },
           valign: "top",
         });
       }
@@ -450,9 +521,9 @@ export const generateElectricityPDF = (billingData, projects) => {
       }
 
       // Urdu text or image row
-      if (r === 8) {
+      if (r === 11) {
         setCell({
-          minCellHeight: 30,
+          minCellHeight: 40,
         });
       }
     },
@@ -548,6 +619,7 @@ export const generateElectricityPDF = (billingData, projects) => {
     },
   });
   let duplicatelinkY = doc.lastAutoTable.finalY + 3;
+   
 
   //Bill Amount
   autoTable(doc, {
@@ -557,13 +629,13 @@ export const generateElectricityPDF = (billingData, projects) => {
       [
         {
           content: "",
-          rowSpan: 17,
+          rowSpan: 22,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
           content:
             "> In case of Gazetted Holidays on due date, bill will be received by bank on next working day.",
-          colSpan: 4,
+          colSpan: 5,
           styles: {
             lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 },
             cellPadding: { top: 0.5 },
@@ -574,7 +646,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         {
           content:
             "> In case of non-payment of electric bill for one month your electricity will be disconnected.",
-          colSpan: 4,
+          colSpan: 5,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
@@ -582,14 +654,14 @@ export const generateElectricityPDF = (billingData, projects) => {
         {
           content:
             "Connection will be restored on payment of Reconnection fee as under:-",
-          colSpan: 4,
+          colSpan: 5,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0.1, left: 0 } },
         },
       ],
       [
         { content: "Bill Amount", styles: {} },
         { content: "Charges", styles: {} },
-        { content: "Bill Amount", styles: {} },
+        { content: "Bill Amount",colSpan:2, styles: {} },
         { content: "Charges", styles: {} },
       ],
       [
@@ -603,6 +675,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "Between 15,001 to 50,000",
+          colSpan:2,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -621,6 +694,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "Between 50,001 to 1 Lac",
+          colSpan:2,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -639,6 +713,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "Over 1 Lac",
+          colSpan:2,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
@@ -650,34 +725,34 @@ export const generateElectricityPDF = (billingData, projects) => {
         {
           content:
             "> Minimum Charges. A-1 Residential (Rs-200/-) A-2-a Commercial ( Rs-450/-) E-1-i Temp (Rs-600/- ) PEAK / OFF PEAK TIMINGS",
-          colSpan: 4,
+          colSpan: 5,
           styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0 } },
         },
       ],
       [
-        { content: "Season", colSpan: 2, styles: {} },
-        { content: "Peak Timing", styles: {} },
-        { content: "Off-Peak Timing", styles: {} },
+        { content: "Season", styles: {} },
+        { content: "Peak Timing",colSpan:2, styles: {} },
+        { content: "Off-Peak Timing",colSpan:2, styles: {} },
       ],
       [
-        { content: "Dec to Feb", colSpan: 2, styles: {} },
-        { content: "5 PM to 9 PM", styles: {} },
-        { content: "Remaining 20 Hours", styles: {} },
+        { content: "Dec to Feb",  styles: {} },
+        { content: "5 PM to 9 PM",colSpan:2, styles: {} },
+        { content: "Remaining 20 Hours",colSpan: 2, styles: {} },
       ],
       [
-        { content: "Mar to May", colSpan: 2, styles: {} },
-        { content: "6 PM to 10 PM", styles: {} },
-        { content: "              -do-", styles: {} },
+        { content: "Mar to May",  styles: {} },
+        { content: "6 PM to 10 PM",colSpan:2, styles: {} },
+        { content: "              -do-",colSpan: 2, styles: {} },
       ],
       [
-        { content: "Jun to Aug", colSpan: 2, styles: {} },
-        { content: "7 PM to 11 PM", styles: {} },
-        { content: "              -do-", styles: {} },
+        { content: "Jun to Aug", styles: {} },
+        { content: "7 PM to 11 PM",colSpan:2, styles: {} },
+        { content: "              -do-", colSpan: 2, styles: {} },
       ],
       [
-        { content: "Sep to Nov", colSpan: 2, styles: {} },
-        { content: "6 PM to 10 PM", styles: {} },
-        { content: "              -do-", styles: {} },
+        { content: "Sep to Nov",  styles: {} },
+        { content: "6 PM to 10 PM",colSpan:2, styles: {} },
+        { content: "              -do-",colSpan: 2, styles: {} },
       ],
       [
         {
@@ -690,7 +765,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "     -1909",
-          colSpan: 2,
+          colSpan: 3,
           styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
@@ -705,7 +780,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "     -29",
-          colSpan: 2,
+          colSpan: 3,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
@@ -720,17 +795,49 @@ export const generateElectricityPDF = (billingData, projects) => {
         },
         {
           content: "     -349",
-          colSpan: 2,
+          colSpan: 3,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
       [
-        {
-          content: "",
-          colSpan: 4,
-          styles: { lineWidth: { top: 0, right: 0.1, bottom: 0.1, left: 0 } },
-        },
+        { content: "Category", styles: {} },
+        { content: "Max Permissible Export Units per Month",colSpan: 4, styles: {} }
       ],
+      [
+        { content: "", styles: {} },
+        { content: "Mar", styles: {} },
+        { content: "Apr", styles: {} },
+        { content: "May", styles: {} },
+        { content: "June", styles: {} },
+      ],
+      [
+        { content: "5 Marla", styles: {} },
+        { content: "375", styles: {} },
+        { content: "375", styles: {} },
+        { content: "500", styles: {} },
+        { content: "500", styles: {} },
+      ],
+      [
+        { content: "8 Marla", styles: {} },
+        { content: "450", styles: {} },
+        { content: "450", styles: {} },
+        { content: "600", styles: {} },
+        { content: "600", styles: {} },
+      ],
+      [
+        { content: "10 Marla", styles: {} },
+        { content: "600", styles: {} },
+        { content: "600", styles: {} },
+        { content: "800", styles: {} },
+        { content: "800", styles: {} },
+      ],
+      [
+        { content: "Kanal & Above", styles: {} },
+        { content: "900", styles: {} },
+        { content: "900", styles: {} },
+        { content: "1200", styles: {} },
+        { content: "1200", styles: {} },
+      ]
     ],
     theme: "grid",
     bodyStyles: {
@@ -744,17 +851,21 @@ export const generateElectricityPDF = (billingData, projects) => {
     },
     columnStyles: {
       0: { cellWidth: 85 },
+      2: { cellWidth: 18 },
+      3: { cellWidth: 15 },
+      4: { cellWidth: 15 },
+      5: { cellWidth: 18 },
     },
     didParseCell: function (data) {
       if (data.section !== "body") return;
 
       const {
         row,
-        // column,
+        column,
         cell,
       } = data;
       const r = row.index;
-      // const c = column.index;
+      const c = column.index;
 
       // Helper to merge style properties
       const setCell = (styles) => Object.assign(cell.styles, styles);
@@ -787,35 +898,28 @@ export const generateElectricityPDF = (billingData, projects) => {
           fontStyle: "bold",
         });
       }
-      if (r === 16) {
-        setCell({
-          minCellHeight: 25,
-        });
-      }
+     
       if (r === 7) {
         setCell({
-          cellPadding: { top: 0.5, bottom: 0.5 },
+          cellPadding: { top: 0.2, bottom: 0.2 },
+        });
+      }
+       if (r >= 16 && r <= 21) {
+        setCell({
+          cellPadding: {top:0.5,bottom:0.5},
+          fontSize: 7
+        });
+      }
+       if ((c === 1 && r >= 16 && r <= 21) || r === 16 || r ===17) {
+        setCell({
+          fontStyle: "bold",
+          
         });
       }
     },
   });
 
   let HistoryY = doc.lastAutoTable.finalY + 3;
-
-  doc.addImage("urdumessage1.jpeg", "JPEG", 15, headerY + 47, 115, 30);
-  doc.addImage("urdumessage3.png", "PNG", 21, duplicatelinkY + 49, 70, 14);
-
-
-
-  // 🔹 Watermark: DUPLICATE BILL
-  doc.saveGraphicsState(); // <-- save current graphics state
-  doc.setGState(new doc.GState({ opacity: 1 })); // Only affects this block
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(40);
-  doc.setTextColor(200, 200, 200); // Light gray
-  doc.text("DUPLICATE BILL", 60, 100, { angle: 20 });
-  doc.text("DUPLICATE BILL", 32, 210, { angle: 20 });
-  doc.restoreGraphicsState(); // <-- restore so rest of PDF is normal
 
   //Bank Copy
   autoTable(doc, {
@@ -833,7 +937,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       [
         { content: "Bank Copy", styles: {} },
         {
-          content: "BAHRIA TOWN PVT LTD - ELECTRICITY BILL",
+          content: "BAHRIA TOWNLAHORE - NET METER ELECTRICITY BILL",
           colSpan: 3,
           styles: { fontStyle: "bold" },
         },
@@ -912,7 +1016,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       [
         { content: "BTL Copy", styles: {} },
         {
-          content: "BAHRIA TOWN PVT LTD - ELECTRICITY BILL",
+          content: "BAHRIA TOWNLAHORE - NET METER ELECTRICITY BILL",
           colSpan: 3,
           styles: { fontStyle: "bold" },
         },
@@ -959,6 +1063,7 @@ export const generateElectricityPDF = (billingData, projects) => {
     ],
     theme: "grid",
     bodyStyles: {
+      margin:0,
       fillColor: false,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
@@ -980,75 +1085,41 @@ export const generateElectricityPDF = (billingData, projects) => {
 
   //Electricity Table
   autoTable(doc, {
-    startY: headerY + 2,
-    margin: { left: 132 },
-    tableWidth: 62.5,
+    startY: headerY + 3,
+    margin: { left: 131 },
+    tableWidth: 64.75,
     body: [
       ["Energy Charges", `-                 ${electricityBill.energyCoast}`],
-      ["GST", `-                 ${electricityBill.gst}`],
-      ["OPC @ 9.9", `-                 ${electricityBill.opc}`],
+      [`OPC @ 9.95    -    ${electricityBill.opc}`,`  GST    -    ${electricityBill.gst}`],
       ["PTV Fee", `-                 ${electricityBill.ptvfee}`],
-      ["FPA", `-                 ${electricityBill.fpacharges}`],
-      [
-        {
-          content: "For Commercial Consumers",
-          colSpan: 2,
-          styles: { fontSize: 9, halign: "center", fontStyle: "bold" },
-        },
-      ],
       ["Further Tax", `-                 ${electricityBill.furthertax}`],
-      ["Retailer Tax", "-                 0"],
+      ["Sales Tax", `-                 ${electricityBill.salesTax}`],
       ["Extra Tax", `-                 ${electricityBill.extraTax}`],
-      [{ content: "", colSpan: 2 }],
-      ["Current Bill", `${electricityBill.billAmount}`],
-      ["Arrears", `${electricityBill.arrears}`],
-      ["Total Payable", `${electricityBill.billAmountInDueDate}`],
-      ["L.P Surcharge", `${electricityBill.billSurcharge}`],
-      ["Late Payment", `${electricityBill.billAmountAfterDueDate}`],
+      ["Income Tax", `-                 ${electricityBill.incomeTax}`],
+      [{content:`FPA ${electricityBill.fpaRate}`,styles:{fontSize:7.5}}, `-                 ${electricityBill.fpacharges}`],
+      ["NM(Cur-crdt)", "-                 0"],
+      ["NM(Pre-Crdt)", "-                 0"],
+      [{content:"NM(Total-Crdt) Remaining",styles:{fontSize:7.4}}, "-                 0"],
+      ["Current Bill", `-                 ${electricityBill.billAmount}`],
+      ["Arrears", `-                 ${electricityBill.arrears}`],
+      ["Total Payable", `-                 ${electricityBill.billAmountInDueDate}`],
+      ["L.P Surcharge", `-                 ${electricityBill.billSurcharge}`],
+      ["Late Payment", `-                 ${electricityBill.billAmountAfterDueDate}`],
     ],
-    theme: "plain",
+    theme: "grid",
     bodyStyles: {
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       valign: "middle",
+      fillColor: false,
+      fontSize:8,
+      cellPadding: 1.53
     },
     columnStyles: {
-      0: { cellWidth: 33 },
+      0: { cellWidth: 33, lineWidth:{right:0, left:0.1, top:0.1, bottom:0.1} },
+      1: { lineWidth:{right:0.1, left:0, top:0.1, bottom:0.1} },
     },
-    didParseCell: function (data) {
-      if (data.section !== "body") return;
-
-      const {
-        row,
-        // column,
-        cell,
-      } = data;
-      const r = row.index;
-      // const c = column.index;
-
-      // Helper to merge style properties
-      const setCell = (styles) => Object.assign(cell.styles, styles);
-
-      if (r <= 4 || (r >= 6 && r <= 8)) {
-        setCell({
-          fontSize: 8,
-          cellPadding: { top: 2 },
-          halign: "left",
-        });
-      }
-      if (r >= 10 && r <= 14) {
-        setCell({
-          fontSize: 9,
-          halign: "left",
-          cellPadding: { top: 2 },
-        });
-      }
-      if (r === 12 || r === 14) {
-        setCell({
-          fontStyle: "bold",
-        });
-      }
-    },
+  
   });
 
   //Bank Account No (BTL Branch)
@@ -1057,13 +1128,13 @@ export const generateElectricityPDF = (billingData, projects) => {
     margin: { left: 74.5 },
     tableWidth: 55.5,
     body: [
-      ["UBL Bank(PK60 UNIL0109000201226209)"],
-      ["Faysal Bank(3130301900222504)"],
-      ["Facilitation Center Bahria - Alfalah Plaza(only Cash)"],
+      ["UBL Bank(PK60 UNIL 0109000201226209)"],
       [""],
-      ["Facilitation Center Bahria Orchard(only Cash)"],
-      ["Bill Collection Timing From"],
-      ["9:00 to 17:00(Only Working Days)"],
+      ["Facilitation Center Bahria Mohlanwal (only Cash)"],
+      [""],
+      ["Facilitation Center Bahria Orchard (only Cash)"],
+      [""],
+      ["Bahria Orchard Head Office (only Cash)"],
       [""],
     ],
     theme: "plain",
@@ -1136,13 +1207,11 @@ export const generateElectricityPDF = (billingData, projects) => {
 
   // Images
   //doc.addImage("imageName", "type", x, y, width, height);
-  doc.addImage("logo.png", "PNG", 15, 23, 18, 18);
-  
-  doc.addImage("urdumessage2.png", "PNG", 99, duplicatelinkY + 47, 96, 23);
+  doc.addImage("logo.png", "PNG", 15, 18, 18, 18);
+  doc.addImage("urdumessage3.png", "PNG", 21, duplicatelinkY + 49, 70, 14);
   doc.setFont("times", "normal");
   doc.setFontSize(12);
   doc.text("Note:", 21, duplicatelinkY + 48);
-  
   doc.addImage("scissors.png", "PNG", 161, HistoryY - 2.5, 3.5, 3.5);
   doc.addImage("scissors.png", "PNG", 161, bankcopyY+0.5, 3.5, 3.5);
 
@@ -1155,7 +1224,7 @@ export const generateElectricityPDF = (billingData, projects) => {
 
 
 
-  const fileName = `Electricity ${electricityBill.btNo} ${electricityBill.billingMonth} ${electricityBill.billingYear} .pdf`;
+  const fileName = `NetMetering ${electricityBill.btNo} ${electricityBill.billingMonth} ${electricityBill.billingYear} .pdf`;
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 
@@ -1167,7 +1236,7 @@ export const generateElectricityPDF = (billingData, projects) => {
     <title>${fileName.replace(".pdf", "")}</title>
 
     <!-- PNG favicon -->
-    <link rel="icon" type="image/png" href="lightning.png" />
+    <link rel="icon" type="image/png" href="solar-cell.png" />
 
     <style>
       body {
