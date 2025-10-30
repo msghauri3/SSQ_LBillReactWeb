@@ -689,7 +689,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           },
         },
         {
-          content: "     -1909",
+          content: `     ${electricityBill.fpa1}`,
           colSpan: 2,
           styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -704,7 +704,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           },
         },
         {
-          content: "     -29",
+          content: `     ${electricityBill.fpa2}`,
           colSpan: 2,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -719,7 +719,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           },
         },
         {
-          content: "     -349",
+          content: `     ${electricityBill.fpa3}`,
           colSpan: 2,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -986,7 +986,7 @@ export const generateElectricityPDF = (billingData, projects) => {
     body: [
       ["Energy Charges", `-                 ${electricityBill.energyCoast}`],
       ["GST", `-                 ${electricityBill.gst}`],
-      ["OPC @ 9.9", `-                 ${electricityBill.opc}`],
+      [`OPC @ ${electricityBill.opcRate}`, `-                 ${electricityBill.opc}`],
       ["PTV Fee", `-                 ${electricityBill.ptvfee}`],
       ["FPA", `-                 ${electricityBill.fpacharges}`],
       [

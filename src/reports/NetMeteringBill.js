@@ -1,4 +1,4 @@
-// src/reports/ElectricityBill.js
+// src/reports/electricityBillsNetMeter.js
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -12,7 +12,7 @@ const formatDate = (dateString) => {
 
 export const generateNetMeteringPDF = (billingData, projects) => {
   // 🔹 Step 1: Extract both objects from API response
-  const { electricityBill, customerDetail, billHistory } = billingData;
+  const { electricityBillsNetMeter, customerDetail, billHistory } = billingData;
 
 
 
@@ -84,12 +84,12 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `  Invoice No: ${electricityBill.invoiceNo}`,
+          content: `  Invoice No: ${electricityBillsNetMeter.invoiceNo}`,
           colSpan: 3,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `Valid Date: ${formatDate(electricityBill.validDate)}`,
+          content: `Valid Date: ${formatDate(electricityBillsNetMeter.validDate)}`,
           colSpan: 3,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -109,16 +109,16 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         },
       ],
       [
-        electricityBill.customerNo,
+        electricityBillsNetMeter.customerNo,
         "1",
-        `${electricityBill.billingMonth} ${electricityBill.billingYear}`,
+        `${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear}`,
         {
-          content: formatDate(electricityBill.readingDate),
+          content: formatDate(electricityBillsNetMeter.readingDate),
           styles: { fontStyle: "normal" },
         },
-        formatDate(electricityBill.issueDate),
+        formatDate(electricityBillsNetMeter.issueDate),
         {
-          content: formatDate(electricityBill.dueDate),
+          content: formatDate(electricityBillsNetMeter.dueDate),
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
@@ -199,15 +199,15 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBill.btNo}`,
+          content: `${electricityBillsNetMeter.btNo}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `${customerDetail.plotType}`,
+          content: ``,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.installedOn}`,
+          content: `${electricityBillsNetMeter.installedOn}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -242,7 +242,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
-          content: `${electricityBill.meterType}`,
+          content: `${electricityBillsNetMeter.meterType}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
@@ -260,19 +260,19 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBill.meterNo}`,
+          content: `${electricityBillsNetMeter.meterNo}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `${electricityBill.previousReading1}`,
+          content: `${electricityBillsNetMeter.previousReading1}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.currentReading1}`,
+          content: `${electricityBillsNetMeter.currentReading1}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.difference1}`,
+          content: `${electricityBillsNetMeter.difference1}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -290,15 +290,15 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `${electricityBill.previousReading1}`,
+          content: `${electricityBillsNetMeter.previousReading2}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.currentReading1}`,
+          content: `${electricityBillsNetMeter.currentReading2}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.difference1}`,
+          content: `${electricityBillsNetMeter.difference2}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -316,15 +316,15 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
-          content: `${electricityBill.previousReading1}`,
+          content: `${electricityBillsNetMeter.previousSolarReading}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
-          content: `${electricityBill.currentReading1}`,
+          content: `${electricityBillsNetMeter.currentSolarReading}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
-          content: `${electricityBill.difference1}`,
+          content: `${electricityBillsNetMeter.differenceSolar}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
@@ -345,15 +345,15 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBill.totalUnit}`,
+          content: `${electricityBillsNetMeter.sumUnitsImport}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: "51.5",
+          content: `${electricityBillsNetMeter.sumRateImport}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.unitsAmount}`,
+          content: `${electricityBillsNetMeter.sumAmountImport}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
          {
@@ -368,15 +368,15 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBill.totalUnit}`,
+          content: `${electricityBillsNetMeter.sumUnitsExport}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: "51.5",
+          content: `${electricityBillsNetMeter.sumRateExport}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.unitsAmount}`,
+          content: `${electricityBillsNetMeter.sumAmountExport}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
          {
@@ -764,7 +764,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           },
         },
         {
-          content: "     -1909",
+          content: `     ${electricityBillsNetMeter.fpa1}`,
           colSpan: 3,
           styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -779,7 +779,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           },
         },
         {
-          content: "     -29",
+          content: `     ${electricityBillsNetMeter.fpa2}`,
           colSpan: 3,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -794,7 +794,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           },
         },
         {
-          content: "     -349",
+          content: `     ${electricityBillsNetMeter.fpa3}`,
           colSpan: 3,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
@@ -942,17 +942,17 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { fontStyle: "bold" },
         },
         { content: "Reference No", styles: {} },
-        { content: electricityBill.customerNo, styles: {} },
+        { content: electricityBillsNetMeter.customerNo, styles: {} },
       ],
       [
-        { content: electricityBill.customerName, colSpan: 2, styles: {} },
+        { content: electricityBillsNetMeter.customerName, colSpan: 2, styles: {} },
         {
-          content: `${customerDetail.ploNo}    /   ${electricityBill.block}    /    ${electricityBill.sector}`,
+          content: `${customerDetail.ploNo}    /   ${electricityBillsNetMeter.block}    /    ${electricityBillsNetMeter.sector}`,
           colSpan: 2,
           styles: {},
         },
         { content: "Meter Number", styles: {} },
-        { content: electricityBill.meterNo, styles: {} },
+        { content: electricityBillsNetMeter.meterNo, styles: {} },
       ],
       [
         { content: "Bill Month", colSpan: 2, styles: {} },
@@ -960,24 +960,24 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         { content: "Barcode No.", styles: {} },
         { content: "Total Payable", styles: {} },
         {
-          content: electricityBill.billAmountInDueDate,
+          content: electricityBillsNetMeter.billAmountInDueDate,
           styles: { fontStyle: "bold" },
         },
       ],
       [
         {
-          content: `${electricityBill.billingMonth} ${electricityBill.billingYear}`,
+          content: `${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear}`,
           colSpan: 2,
           styles: {},
         },
         {
-          content: formatDate(electricityBill.dueDate),
+          content: formatDate(electricityBillsNetMeter.dueDate),
           styles: { fontStyle: "bold" },
         },
-        { content: electricityBill.btNo, styles: { fontStyle: "bold" } },
+        { content: electricityBillsNetMeter.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
-          content: electricityBill.billAmountAfterDueDate,
+          content: electricityBillsNetMeter.billAmountAfterDueDate,
           styles: { fontStyle: "bold" },
         }
       ]
@@ -1021,17 +1021,17 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { fontStyle: "bold" },
         },
         { content: "Reference No", styles: {} },
-        { content: electricityBill.customerNo, styles: {} },
+        { content: electricityBillsNetMeter.customerNo, styles: {} },
       ],
       [
-        { content: electricityBill.customerName, colSpan: 2, styles: {} },
+        { content: electricityBillsNetMeter.customerName, colSpan: 2, styles: {} },
         {
-          content: `${customerDetail.ploNo}    /   ${electricityBill.block}    /    ${electricityBill.sector}`,
+          content: `${customerDetail.ploNo}    /   ${electricityBillsNetMeter.block}    /    ${electricityBillsNetMeter.sector}`,
           colSpan: 2,
           styles: {},
         },
         { content: "Meter Number", styles: {} },
-        { content: electricityBill.meterNo, styles: {} },
+        { content: electricityBillsNetMeter.meterNo, styles: {} },
       ],
       [
         { content: "Bill Month", colSpan: 2, styles: {} },
@@ -1039,24 +1039,24 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         { content: "Barcode No.", styles: {} },
         { content: "Total Payable", styles: {} },
         {
-          content: electricityBill.billAmountInDueDate,
+          content: electricityBillsNetMeter.billAmountInDueDate,
           styles: { fontStyle: "bold" },
         },
       ],
       [
         {
-          content: `${electricityBill.billingMonth} ${electricityBill.billingYear}`,
+          content: `${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear}`,
           colSpan: 2,
           styles: {},
         },
         {
-          content: formatDate(electricityBill.dueDate),
+          content: formatDate(electricityBillsNetMeter.dueDate),
           styles: { fontStyle: "bold" },
         },
-        { content: electricityBill.btNo, styles: { fontStyle: "bold" } },
+        { content: electricityBillsNetMeter.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
-          content: electricityBill.billAmountAfterDueDate,
+          content: electricityBillsNetMeter.billAmountAfterDueDate,
           styles: { fontStyle: "bold" },
         },
       ],
@@ -1084,27 +1084,30 @@ export const generateNetMeteringPDF = (billingData, projects) => {
 
 
   //Electricity Table
+  // const isCredit = electricityBillsNetMeter.nmTotalCredit < 0;
   autoTable(doc, {
     startY: headerY + 3,
     margin: { left: 131 },
     tableWidth: 64.75,
     body: [
-      ["Energy Charges", `-                 ${electricityBill.energyCoast}`],
-      [`OPC @ 9.95    -    ${electricityBill.opc}`,`  GST    -    ${electricityBill.gst}`],
-      ["PTV Fee", `-                 ${electricityBill.ptvfee}`],
-      ["Further Tax", `-                 ${electricityBill.furthertax}`],
-      ["Sales Tax", `-                 ${electricityBill.salesTax}`],
-      ["Extra Tax", `-                 ${electricityBill.extraTax}`],
-      ["Income Tax", `-                 ${electricityBill.incomeTax}`],
-      [{content:`FPA ${electricityBill.fpaRate}`,styles:{fontSize:7.5}}, `-                 ${electricityBill.fpacharges}`],
-      ["NM(Cur-crdt)", "-                 0"],
-      ["NM(Pre-Crdt)", "-                 0"],
-      [{content:"NM(Total-Crdt) Remaining",styles:{fontSize:7.4}}, "-                 0"],
-      ["Current Bill", `-                 ${electricityBill.billAmount}`],
-      ["Arrears", `-                 ${electricityBill.arrears}`],
-      ["Total Payable", `-                 ${electricityBill.billAmountInDueDate}`],
-      ["L.P Surcharge", `-                 ${electricityBill.billSurcharge}`],
-      ["Late Payment", `-                 ${electricityBill.billAmountAfterDueDate}`],
+      ["Energy Charges", `-                 ${electricityBillsNetMeter.unitsAmount}`],
+      [`OPC @ ${electricityBillsNetMeter.opcRate}    -    ${electricityBillsNetMeter.opc}`, `  GST    -    ${electricityBillsNetMeter.gst}`],
+      ["PTV Fee", `-                 ${electricityBillsNetMeter.ptvfee}`],
+      ["Further Tax", `-                 ${electricityBillsNetMeter.furthertax}`],
+      ["Sales Tax", `-                 ${electricityBillsNetMeter.salesTax ?? ""}`],
+      ["Extra Tax", `-                 ${electricityBillsNetMeter.extraTax ?? ""}`],
+      ["Income Tax", `-                 ${electricityBillsNetMeter.incomeTax ?? ""}`],
+      [{ content: `FPA (Feb-24 @4.9213)`, styles: { fontSize: 7.5 } }, `-                ${electricityBillsNetMeter.fpacharges}`],
+      ["NM(Cur-crdt)", `-                ${electricityBillsNetMeter.nmPreviousCredit}`],
+      ["NM(Pre-Crdt)", `-                ${electricityBillsNetMeter.nmCurrentCredit}`],
+      [{ content: "NM(Total-Crdt) Remaining", styles: { fontSize: 7.4 } }, `-                ${electricityBillsNetMeter.nmTotalCredit}`],
+      ["Current Bill", `-                 ${electricityBillsNetMeter.billAmount}`],
+      ["Arrears", `-                 ${electricityBillsNetMeter.arrears}`],
+      // ["Total Payable", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`],
+      ["Total Payable", `-                 ${electricityBillsNetMeter.billAmountInDueDate}`],
+      ["L.P Surcharge", `-                 ${electricityBillsNetMeter.billSurcharge}`],
+      // ["Late Payment", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`],
+      ["Late Payment", `-                 ${electricityBillsNetMeter.billAmountAfterDueDate}`],
     ],
     theme: "grid",
     bodyStyles: {
@@ -1154,19 +1157,19 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     margin: { left: 26 },
     tableWidth: 60,
     body: [
-      [{ content: "Month", colSpan: 2 }, "Units", "Bill", "Payment"],
-      [`${billHistory[0]?.billingMonth?.slice(0, 3)}`, `${billHistory[0]?.billingYear}`, `${billHistory[0]?.units}`, `${billHistory[0]?.bill}`, `${billHistory[0]?.payment}`],
-      [`${billHistory[1]?.billingMonth?.slice(0, 3)}`, `${billHistory[1]?.billingYear}`, `${billHistory[1]?.units}`, `${billHistory[1]?.bill}`, `${billHistory[1]?.payment}`],
-      [`${billHistory[2]?.billingMonth?.slice(0, 3)}`, `${billHistory[2]?.billingYear}`, `${billHistory[2]?.units}`, `${billHistory[2]?.bill}`, `${billHistory[2]?.payment}`],
-      [`${billHistory[3]?.billingMonth}`,              `${billHistory[3]?.billingYear}`, `${billHistory[3]?.units}`, `${billHistory[3]?.bill}`, `${billHistory[3]?.payment}`],
-      [`${billHistory[4]?.billingMonth}`,              `${billHistory[4]?.billingYear}`, `${billHistory[4]?.units}`, `${billHistory[4]?.bill}`, `${billHistory[4]?.payment}`],
-      [`${billHistory[5]?.billingMonth}`,              `${billHistory[5]?.billingYear}`, `${billHistory[5]?.units}`, `${billHistory[5]?.bill}`, `${billHistory[5]?.payment}`],
-      [`${billHistory[6]?.billingMonth}`,              `${billHistory[6]?.billingYear}`, `${billHistory[6]?.units}`, `${billHistory[6]?.bill}`, `${billHistory[6]?.payment}`],
-      [`${billHistory[7]?.billingMonth?.slice(0, 3)}`, `${billHistory[7]?.billingYear}`, `${billHistory[7]?.units}`, `${billHistory[7]?.bill}`, `${billHistory[7]?.payment}`],
-      [`${billHistory[8]?.billingMonth?.slice(0, 3)}`, `${billHistory[8]?.billingYear}`, `${billHistory[8]?.units}`, `${billHistory[8]?.bill}`, `${billHistory[8]?.payment}`],
-      [`${billHistory[9]?.billingMonth?.slice(0, 3)}`, `${billHistory[9]?.billingYear}`, `${billHistory[9]?.units}`, `${billHistory[9]?.bill}`, `${billHistory[9]?.payment}`],
-      [`${billHistory[10]?.billingMonth?.slice(0, 3)}`, `${billHistory[10]?.billingYear}`, `${billHistory[10]?.units}`, `${billHistory[10]?.bill}`, `${billHistory[10]?.payment}`],
-      [`${billHistory[11]?.billingMonth?.slice(0, 3)}`, `${billHistory[11]?.billingYear}`, `${billHistory[11]?.units}`, `${billHistory[11]?.bill}`, `${billHistory[11]?.payment}`],
+      [{ content: "Month", colSpan: 2 }, "Units", "Bill"],
+      [`${billHistory[0]?.billingMonth?.slice(0, 3)}`, `${billHistory[0]?.billingYear}`, `${billHistory[0]?.units}`, `${billHistory[0]?.bill}`],
+      [`${billHistory[1]?.billingMonth?.slice(0, 3)}`, `${billHistory[1]?.billingYear}`, `${billHistory[1]?.units}`, `${billHistory[1]?.bill}`],
+      [`${billHistory[2]?.billingMonth?.slice(0, 3)}`, `${billHistory[2]?.billingYear}`, `${billHistory[2]?.units}`, `${billHistory[2]?.bill}`],
+      [`${billHistory[3]?.billingMonth}`,              `${billHistory[3]?.billingYear}`, `${billHistory[3]?.units}`, `${billHistory[3]?.bill}`],
+      [`${billHistory[4]?.billingMonth}`,              `${billHistory[4]?.billingYear}`, `${billHistory[4]?.units}`, `${billHistory[4]?.bill}`],
+      [`${billHistory[5]?.billingMonth}`,              `${billHistory[5]?.billingYear}`, `${billHistory[5]?.units}`, `${billHistory[5]?.bill}`],
+      [`${billHistory[6]?.billingMonth}`,              `${billHistory[6]?.billingYear}`, `${billHistory[6]?.units}`, `${billHistory[6]?.bill}`],
+      [`${billHistory[7]?.billingMonth?.slice(0, 3)}`, `${billHistory[7]?.billingYear}`, `${billHistory[7]?.units}`, `${billHistory[7]?.bill}`],
+      [`${billHistory[8]?.billingMonth?.slice(0, 3)}`, `${billHistory[8]?.billingYear}`, `${billHistory[8]?.units}`, `${billHistory[8]?.bill}`],
+      [`${billHistory[9]?.billingMonth?.slice(0, 3)}`, `${billHistory[9]?.billingYear}`, `${billHistory[9]?.units}`, `${billHistory[9]?.bill}`],
+      [`${billHistory[10]?.billingMonth?.slice(0, 3)}`, `${billHistory[10]?.billingYear}`, `${billHistory[10]?.units}`, `${billHistory[10]?.bill}`],
+      [`${billHistory[11]?.billingMonth?.slice(0, 3)}`, `${billHistory[11]?.billingYear}`, `${billHistory[11]?.units}`, `${billHistory[11]?.bill}`],
     ],
     theme: "plain",
     bodyStyles: {
@@ -1178,9 +1181,9 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       cellPadding: 0.3,
     },
     columnStyles: {
-      0: { cellWidth: 10 },
-      1: { cellWidth: 10 },
-      2: { cellWidth: 15 },
+      // 0: { cellWidth: 10 },
+      // 1: { cellWidth: 10 },
+      // 2: { cellWidth: 15 },
     },
     didParseCell: function (data) {
       if (data.section !== "body") return;
@@ -1224,7 +1227,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
 
 
 
-  const fileName = `NetMetering ${electricityBill.btNo} ${electricityBill.billingMonth} ${electricityBill.billingYear} .pdf`;
+  const fileName = `NetMetering ${electricityBillsNetMeter.btNo} ${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear} .pdf`;
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 

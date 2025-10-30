@@ -1,23 +1,9 @@
-import React, { useState } from "react";
-import { 
-  Container, 
-  TextField, 
-  MenuItem, 
-  Button, 
-  Box, 
-  FormControl, 
-  InputLabel, 
-  Typography, 
-  Select, 
-  Alert, 
-  CircularProgress,
-  // useTheme,
-  // useMediaQuery 
-} from "@mui/material";
+import React, { useState, useRef, useEffect } from "react";
+import { Container,  TextField, MenuItem,  Button,  Box, FormControl, InputLabel, Typography, Select,  Alert, CircularProgress} from "@mui/material";
 import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-// import { generateElectricityPDF } from "../reports/ElectricityBill";
+import { generateElectricityPDF } from "../reports/ElectricityBill";
 import { generateMaintenancePDF } from "../reports/MaintenanceBill"; 
 import { generateNetMeteringPDF } from "../reports/NetMeteringBill"; 
 
@@ -30,8 +16,14 @@ const Billing = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const btNoRef = useRef(null);
+
+  useEffect(() => {
+    if (btNoRef.current) {
+      btNoRef.current.focus();
+    }
+  }, []);
 
   // Professional color palette with perfect contrast
   const colors = {
@@ -68,48 +60,50 @@ const Billing = () => {
     if (error) setError("");
   };
 
-  // const handleGenerate = async () => {
-  //   if (!billingData.billingType) return setError("Please select billing type");
-  //   if (!billingData.btNo) return setError("Please enter BTNo");
-  //   if (!billingData.project) return setError("Please select project");
 
+  // // Hard coded Data, without api
+  // const handleGenerate = async () => {
   //   setLoading(true);
   //   setError("");
 
   //   try {
-  //     const apiUrl = `https://localhost:7108/api/${billingData.billingType === "electricity"
-  //       ? "ElectricityBill"
-  //       : "MaintenanceBill"
-  //       }?btNo=${billingData.btNo}&project=${billingData.project
-  //       }&billingType=${billingData.billingType}`;
+  //     // ---------------------------------------------------
+  //     // ⚙️ Hardcoded PDF generation logic
+  //     // ---------------------------------------------------
+  //     let pdfFunction = null;
 
-  //     console.log("🌐 API URL:", apiUrl);
+  //     // 1️⃣ Maintenance Bill
+  //     if (billingData.billingType === "maintenance") {
+  //       pdfFunction = generateMaintenancePDF;
+  //       console.log("🧾 Maintenance Bill Selected");
+  //     }
 
-  //     const response = await fetch(apiUrl);
+  //     // 2️⃣ Electricity / Net Metering
+  //     else if (billingData.billingType === "electricity") {
+  //       if (billingData.project === "Orchards") {
+  //         pdfFunction = generateNetMeteringPDF;
+  //         console.log("⚡ Orchards Project → Net Metering Bill Selected");
+  //       } else {
+  //         pdfFunction = generateElectricityPDF;
+  //         console.log("💡 Electricity Bill Selected (Normal)");
+  //       }
+  //     }
 
-  //     if (response.status === 404) {
-  //       setError("No bill found for this BTNo and Project.");
+  //     // ---------------------------------------------------
+  //     // 3️⃣ Validate selection
+  //     // ---------------------------------------------------
+  //     if (!pdfFunction) {
+  //       setError("Unable to determine which bill to generate.");
   //       setLoading(false);
   //       return;
   //     }
 
-  //     if (!response.ok) throw new Error("Failed to fetch bill data");
-
-  //     const data = await response.json();
-  //     console.log("✅ API Response:", data);
-
-  //     if (!data || data.length === 0) {
-  //       setError("No bill found for this BTNo and Project.");
-  //     } else {
-  //       if (billingData.billingType === "electricity") {
-  //         generateElectricityPDF(data, projects);
-  //       } else {
-  //         generateMaintenancePDF(data, projects);
-  //       }
-  //     }
+  //     // ✅ Instead use dummy or existing billingData
+  //     console.log("📄 Generating PDF directly...");
+  //     pdfFunction(billingData, projects);
   //   } catch (err) {
-  //     console.error("❌ Fetch Error:", err);
-  //     setError("Error fetching bill data. Please try again.");
+  //     console.error("❌ Error:", err);
+  //     setError("Error generating bill. Please try again.");
   //   } finally {
   //     setLoading(false);
   //   }
@@ -126,7 +120,7 @@ const Billing = () => {
     try {
       let formattedBTNo = billingData.btNo.trim().toUpperCase();
 
-      // ✅ Automatically add correct prefix based on project
+      // ✅ Auto prefix based on project
       if (!formattedBTNo.startsWith("BTL-") && !formattedBTNo.startsWith("BTO-")) {
         if (billingData.project === "Mohlanwal") {
           formattedBTNo = `BTL-${formattedBTNo}`;
@@ -135,21 +129,61 @@ const Billing = () => {
         }
       }
 
-      // const apiUrl = `https://localhost:7108/api/${billingData.billingType === "electricity" ? "ElectricityBill" : "MaintenanceBill"
-      //   }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
 
-
-      // const apiUrl = `http://172.20.228.2/api/${billingData.billingType === "electricity" ? "ElectricityBill" : "MaintenanceBill"
-      //   }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
-
-
-      
-      const apiUrl = `https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api/${billingData.billingType === "electricity" ? "ElectricityBill" : "MaintenanceBill"
-        }?btNo=${formattedBTNo}&project=${billingData.project}&billingType=${billingData.billingType}`;
+      // 🔧 Change base URL here manually
+      const baseUrl = "https://localhost:7108/api";
+      // const baseUrl = "http://172.20.228.2/api";
+      // const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
       
       
-      // console.log("🌐 API URL:", apiUrl);
+      const maintenanceUrl = `${baseUrl}/MaintenanceBill?btNo=${formattedBTNo}&project=${billingData.project}`;
+      const netMeterUrl =    `${baseUrl}/ElectricityBillsNetMeter?BTNo=${formattedBTNo}&Project=${billingData.project}`;
+      const electricityUrl = `${baseUrl}/ElectricityBill?btNo=${formattedBTNo}&project=${billingData.project}`;
+      let apiUrl = "";
+      let pdfFunction = null;
 
+      // ---------------------------------------------------
+      // 1️⃣ STEP: Maintenance
+      // ---------------------------------------------------
+      if (billingData.billingType === "maintenance") {
+        apiUrl = maintenanceUrl
+        pdfFunction = generateMaintenancePDF;
+      }
+
+      // ---------------------------------------------------
+      // 2️⃣ STEP: Electricity / Net Metering Detection
+      // ---------------------------------------------------
+      else if (billingData.billingType === "electricity") {
+
+        const netResponse = await fetch(netMeterUrl);
+
+        if (netResponse.ok) {
+          const netData = await netResponse.json();
+
+          if (netData && netData.electricityBillsNetMeter) {
+            apiUrl = netMeterUrl;
+            pdfFunction = generateNetMeteringPDF;
+
+          } else {
+            apiUrl = electricityUrl
+            pdfFunction = generateElectricityPDF;
+          }
+        } else {
+          apiUrl = electricityUrl
+          pdfFunction = generateElectricityPDF;
+        }
+      }
+
+      // ---------------------------------------------------
+      // 3️⃣ STEP: Validate API selection
+      // ---------------------------------------------------
+      if (!apiUrl || !pdfFunction) {
+        setError("Unable to determine which bill to generate.");
+        setLoading(false);
+        return;
+      }
+
+      // console.log("🌐 Fetching Data From:", apiUrl);
       const response = await fetch(apiUrl);
 
       if (response.status === 404) {
@@ -161,30 +195,44 @@ const Billing = () => {
       if (!response.ok) throw new Error("Failed to fetch bill data");
 
       const data = await response.json();
-      // console.log("✅ API Response:", data);
 
-      if (!data || data.length === 0) {
-        setError("No bill found for this BTNo and Project.");
-      } else {
-        if (billingData.billingType === "electricity") {
-          // generateElectricityPDF(data, projects);
-          generateNetMeteringPDF(data, projects);
-        } else {
-          generateMaintenancePDF(data, projects);
-        }
+      if (!data || Object.keys(data).length === 0) {
+        setError("No bill data found.");
+        setLoading(false);
+        return;
       }
+
+      // ---------------------------------------------------
+      // 4️⃣ STEP: Generate PDF
+      // ---------------------------------------------------
+      pdfFunction(data, projects);
     } catch (err) {
-      console.error("❌ Fetch Error:", err);
+      console.error("❌ Error:", err);
       setError("Error fetching bill data. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+
+
   const resetForm = () => {
     setBillingData({ billingType: "electricity", btNo: "", project: "" });
     setError("");
+    // 👇 After reset, focus again on BT Number field
+    if (btNoRef.current) {
+      btNoRef.current.focus();
+    }
   };
+
+  // ⬇️ Add this function inside your component
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default form submit/refresh
+      handleGenerate();
+    }
+  };
+
 
   // Enhanced field styles with modern look
   const fieldStyles = {
@@ -256,31 +304,7 @@ const Billing = () => {
     transition: 'all 0.3s ease'
   };
 
-  // Reset Button - Glass effect
-  // const resetButtonStyle = {
-  //   border: `2px solid rgba(255, 255, 255, 0.5)`,
-  //   borderRadius: '12px',
-  //   color: '#ffffff',
-  //   fontWeight: '600',
-  //   textTransform: 'none',
-  //   padding: '16px 20px',
-  //   height: '56px',
-  //   fontSize: '14px',
-  //   backgroundColor: 'rgba(255, 255, 255, 0.15)',
-  //   letterSpacing: '0.5px',
-  //   minWidth: '100px',
-  //   backdropFilter: 'blur(10px)',
-  //   '&:hover': {
-  //     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-  //     border: `2px solid rgba(255, 255, 255, 0.8)`,
-  //     boxShadow: '0 4px 12px rgba(255, 255, 255, 0.2)',
-  //     transform: 'translateY(-1px)',
-  //   },
-  //   '&:active': {
-  //     transform: 'translateY(0)',
-  //   },
-  //   transition: 'all 0.3s ease'
-  // };
+  
   const resetButtonStyle = {
     border: `2px solid rgba(220, 38, 38, 0.6)`, // red border
     borderRadius: '12px',
@@ -388,39 +412,6 @@ const Billing = () => {
         
         {/* Header Section - Combined to remove extra space */}
         <Box sx={{ textAlign: 'center', mb: 1 }}>
-          {/* <Typography 
-            variant="h3" 
-            component="h1" 
-            sx={{ 
-              fontWeight: 'bold', 
-              mb: 1, 
-              color: colors.text,
-              fontSize: { xs: '1.8rem', md: '2.5rem' },
-              lineHeight: 1.2,
-              textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
-            }}
-          >
-            <Box 
-              component="span" 
-              sx={{ 
-                display: 'inline-block',
-                background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
-                color: 'white',
-                px: 2.5,
-                py: 0.8,
-                borderRadius: '10px',
-                boxShadow: '0 6px 20px rgba(37, 99, 235, 0.5)',
-                mr: 1.5,
-                fontSize: { xs: '1.3rem', md: '1.8rem' },
-                border: '1px solid rgba(255, 255, 255, 0.3)'
-              }}
-            >
-              BAHRIA TOWN
-            </Box>
-            Billing System
-          </Typography> */}
-          
-
           <Typography
             variant="h3"
             component="h1"
@@ -438,20 +429,20 @@ const Billing = () => {
               component="span"
               sx={{
                 display: "inline-block",
-                background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
+                // background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
                 color: "white",
                 px: 2.5,
                 py: 0.8,
-                borderRadius: "10px",
-                boxShadow: "0 6px 20px rgba(37, 99, 235, 0.5)",
+                // borderRadius: "10px",
+                // boxShadow: "0 6px 20px rgba(37, 99, 235, 0.5)",
                 mr: 1.5,
                 fontSize: { xs: "1.3rem", md: "1.8rem" },
-                border: "1px solid rgba(255, 255, 255, 0.3)",
+                // border: "1px solid rgba(255, 255, 255, 0.3)",
               }}
             >
-              BAHRIA TOWN
+              BAHRIA TOWN BILLING SYSTEM
             </Box>
-            Billing System{" "}
+            {/* BAHRIA TOWN BILLING SYSTEM{" "} */}
             <Typography
               component="span"
               sx={{
@@ -512,20 +503,6 @@ const Billing = () => {
 
         {/* Billing Type Selection with Icons - Directly after subtitle */}
         <Box sx={{ mb: 3 }}>
-          {/* <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: '600', 
-              mb: 1.5, // Reduced margin
-              color: colors.text,
-              textAlign: 'center',
-              fontSize: '1rem',
-              textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)',
-              mt: 0 // Ensure no top margin
-            }}
-          >
-            Select Billing Type
-          </Typography> */}
           <Box sx={{ 
             display: 'flex', 
             gap: 1.5, 
@@ -547,7 +524,7 @@ const Billing = () => {
         </Box>
 
         {/* Form Fields - Reduced spacing */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3 }} onKeyDown={handleKeyDown}>
           {/* BTNo Input */}
           <Box sx={{ mb: 2 }}>
             <TextField 
@@ -558,6 +535,7 @@ const Billing = () => {
               onChange={handleInputChange} 
               placeholder="Enter your BT Number (e.g 12345)" 
               fullWidth 
+              inputRef={btNoRef}   // ✅ Yeh line zaroori hai
             />
           </Box>
 

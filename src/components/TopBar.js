@@ -8,7 +8,7 @@ const TopBar = () => {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      height: "40px",
+      height: "30px",
       padding: "0 40px",
       fontSize: "14px",
       fontWeight: "500",
@@ -37,7 +37,7 @@ const TopBar = () => {
   return (
     <div style={styles.topbar}>
       <div style={styles.left}>
-        <span>Bahria Town Lahore</span>
+        <span>Bahria Town, Lahore Billing Sytem</span>
       </div>
       {/* <div style={styles.right}>
         <a
