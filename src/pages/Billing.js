@@ -131,9 +131,9 @@ const Billing = () => {
 
 
       // 🔧 Change base URL here manually
-      const baseUrl = "https://localhost:7108/api";
+      // const baseUrl = "https://localhost:7108/api";
       // const baseUrl = "http://172.20.228.2/api";
-      // const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
+      const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
       
       
       const maintenanceUrl = `${baseUrl}/MaintenanceBill?btNo=${formattedBTNo}&project=${billingData.project}`;
