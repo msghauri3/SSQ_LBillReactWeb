@@ -1159,6 +1159,7 @@ export const generateElectricityPDF = (billingData, projects) => {
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 
+  const faviconUrl = `${window.location.origin}/lightning.png`;
 
   // ✅ HTML structure
   const html = `
@@ -1167,7 +1168,7 @@ export const generateElectricityPDF = (billingData, projects) => {
     <title>${fileName.replace(".pdf", "")}</title>
 
     <!-- PNG favicon -->
-    <link rel="icon" type="image/png" href="lightning.png" />
+    <link rel="icon" type="image/png" href="${faviconUrl}" />
 
     <style>
       body {

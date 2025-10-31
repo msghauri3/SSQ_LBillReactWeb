@@ -1232,6 +1232,8 @@ export const generateNetMeteringPDF = (billingData, projects) => {
   const blobUrl = URL.createObjectURL(blob);
 
 
+  const faviconUrl = `${window.location.origin}/solar-cell.png`;
+
   // ✅ HTML structure
   const html = `
 <html>
@@ -1239,7 +1241,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     <title>${fileName.replace(".pdf", "")}</title>
 
     <!-- PNG favicon -->
-    <link rel="icon" type="image/png" href="solar-cell.png" />
+    <link rel="icon" type="image/png" href="${faviconUrl}" />
 
     <style>
       body {

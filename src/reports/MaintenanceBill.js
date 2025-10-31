@@ -558,6 +558,8 @@ export const generateMaintenancePDF = (billingData, projects) => {
   // const faviconUrl = `${window.location.origin}/bag.png`;
   // const faviconUrl = "bag.png";
 
+  const faviconUrl = `${window.location.origin}/bag.png`;
+
   // ✅ HTML structure
   const html = `
 <html>
@@ -565,7 +567,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
     <title>${fileName.replace(".pdf", "")}</title>
 
     <!-- PNG favicon -->
-    <link rel="icon" type="image/png" href="bag.png" />
+    <link rel="icon" type="image/png" href="${faviconUrl}" />
 
     <style>
       body {
