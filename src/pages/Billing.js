@@ -207,7 +207,7 @@ const Billing = () => {
       // ---------------------------------------------------
       pdfFunction(data, projects);
     } catch (err) {
-      console.error("❌ Error:", err);
+      // console.error("❌ Error:", err);
       setError("Error fetching bill data. Please try again.");
     } finally {
       setLoading(false);
