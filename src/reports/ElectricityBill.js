@@ -199,6 +199,8 @@ export const generateElectricityPDF = (billingData, projects) => {
   });
   let headerY = doc.lastAutoTable.finalY;
 
+
+  
   //Body-1
   autoTable(doc, {
     startY: doc.lastAutoTable.finalY,
@@ -305,7 +307,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: "51.5",
+          content: customerDetail.plotType?.toLowerCase() === "commercial" ? "59" : "51.5",
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {

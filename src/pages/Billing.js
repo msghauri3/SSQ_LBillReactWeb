@@ -40,10 +40,20 @@ const Billing = () => {
     warning: "#f59e0b"
   };
 
-  const projects = [
-    { value: "Mohlanwal", label: "Mohlanwal" },
-    { value: "Orchards", label: "Orchard / EMC / NASHEMAN / ROSE GARDEN" },
-  ];
+  // ✅ Dropdown options
+  const projects =
+    billingData.billingType === "maintenance"
+      ? [
+        { value: "MohlanwalResidential", label: "MOHLANWAL - Residential" },
+        { value: "MohlanwalCommercial", label: "MOHLANWAL - Commercial" },
+        { value: "Orchards", label: "Orchard / EMC / NASHEMAN / ROSE GARDEN" },
+      ]
+      : [
+        { value: "Mohlanwal", label: "Mohlanwal" },
+        { value: "Orchards", label: "Orchard / EMC / NASHEMAN / ROSE GARDEN" },
+      ];
+
+
 
   const handleInputChange = (e) => {
     setBillingData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -120,14 +130,43 @@ const Billing = () => {
     try {
       let formattedBTNo = billingData.btNo.trim().toUpperCase();
 
-      // ✅ Auto prefix based on project
-      if (!formattedBTNo.startsWith("BTL-") && !formattedBTNo.startsWith("BTO-")) {
-        if (billingData.project === "Mohlanwal") {
-          formattedBTNo = `BTL-${formattedBTNo}`;
-        } else if (billingData.project === "Orchards") {
-          formattedBTNo = `BTO-${formattedBTNo}`;
+      // ✅ Normalize project before API call
+      let projectForApi = billingData.project;
+      if (projectForApi === "MohlanwalResidential" || projectForApi === "MohlanwalCommercial") {
+        projectForApi = "Mohlanwal";
+      }
+
+      // ✅ Auto prefix logic based on billing type + projectForApi
+      if (
+        !formattedBTNo.startsWith("BTL-") &&
+        !formattedBTNo.startsWith("BTO-") &&
+        !formattedBTNo.startsWith("BTLC-") &&
+        !formattedBTNo.startsWith("BTOM-")
+      ) {
+        if (billingData.billingType === "electricity") {
+          // 🔌 Electricity Bill Prefix
+          if (projectForApi === "Mohlanwal") {
+            formattedBTNo = `BTL-${formattedBTNo}`;
+          } else if (projectForApi === "Orchards") {
+            formattedBTNo = `BTO-${formattedBTNo}`;
+          }
+        }
+
+        else if (billingData.billingType === "maintenance") {
+          // 🧾 Maintenance Bill Prefix
+          if (billingData.project === "MohlanwalResidential") {
+            formattedBTNo = `BTL-${formattedBTNo}`;
+          }
+          else if (billingData.project === "MohlanwalCommercial") {
+            formattedBTNo = `BTLC-${formattedBTNo}`;
+          }
+          else if (projectForApi === "Orchards") {
+            formattedBTNo = `BTOM-${formattedBTNo}`;
+          }
         }
       }
+
+
 
 
       // 🔧 Change base URL here manually
@@ -136,9 +175,9 @@ const Billing = () => {
       const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
       
       
-      const maintenanceUrl = `${baseUrl}/MaintenanceBill?btNo=${formattedBTNo}&project=${billingData.project}`;
-      const netMeterUrl =    `${baseUrl}/ElectricityBillsNetMeter?BTNo=${formattedBTNo}&Project=${billingData.project}`;
-      const electricityUrl = `${baseUrl}/ElectricityBill?btNo=${formattedBTNo}&project=${billingData.project}`;
+      const maintenanceUrl = `${baseUrl}/MaintenanceBill?btNo=${formattedBTNo}&project=${projectForApi}`;
+      const netMeterUrl =    `${baseUrl}/ElectricityBillsNetMeter?BTNo=${formattedBTNo}&Project=${projectForApi}`;
+      const electricityUrl = `${baseUrl}/ElectricityBill?btNo=${formattedBTNo}&project=${projectForApi}`;
       let apiUrl = "";
       let pdfFunction = null;
 
