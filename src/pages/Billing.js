@@ -138,17 +138,17 @@ const Billing = () => {
 
         // 🧾 Check if BTNo and selected project mismatch
         if (formattedBTNo.startsWith("BTL-") && !projectLabel.includes("MOHLANWAL - Residential")) {
-          setError("No bill found for this BTNo and Project.");
+          setError("Wrong Project Selected");
           return;
         }
 
         if (formattedBTNo.startsWith("BTLC-") && !projectLabel.includes("MOHLANWAL - Commercial")) {
-          setError("No bill found for this BTNo and Project.");
+          setError("Wrong Project Selected");
           return;
         }
 
         if (formattedBTNo.startsWith("BTOM-") && !projectLabel.includes("Orchard")) {
-          setError("No bill found for this BTNo and Project.");
+          setError("Wrong Project Selected");
           return;
         }
       }
