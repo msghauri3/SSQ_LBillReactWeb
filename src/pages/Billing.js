@@ -130,6 +130,31 @@ const Billing = () => {
     try {
       let formattedBTNo = billingData.btNo.trim().toUpperCase();
 
+
+      // 🔍 Maintenance prefix + project validation
+      if (billingData.billingType === "maintenance") {
+        const selectedProject = projects.find(p => p.value === billingData.project);
+        const projectLabel = selectedProject?.label || "";
+
+        // 🧾 Check if BTNo and selected project mismatch
+        if (formattedBTNo.startsWith("BTL-") && !projectLabel.includes("MOHLANWAL - Residential")) {
+          setError("Wrong Project Selected");
+          return;
+        }
+
+        if (formattedBTNo.startsWith("BTLC-") && !projectLabel.includes("MOHLANWAL - Commercial")) {
+          setError("Wrong Project Selected");
+          return;
+        }
+
+        if (formattedBTNo.startsWith("BTOM-") && !projectLabel.includes("Orchard")) {
+          setError("Wrong Project Selected");
+          return;
+        }
+      }
+
+      
+
       // ✅ Normalize project before API call
       let projectForApi = billingData.project;
       if (projectForApi === "MohlanwalResidential" || projectForApi === "MohlanwalCommercial") {
