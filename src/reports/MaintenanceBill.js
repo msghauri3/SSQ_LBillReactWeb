@@ -508,10 +508,10 @@ export const generateMaintenancePDF = (billingData, projects) => {
     margin: { left: 74 },
     tableWidth: 60,
     body: [
-      ["Faysal Bank (3130301900222505)"],
       ["Facilitation Center Bahria-Alfalah plaza(only Cash)"],
       ["Facilitation Center Bahria Orchard (only Cash) "],
       [""],
+      ["Corporate Head Office-Bahria Orchard(Only Cash)"],
       ["Bill Collection Timing From"],
       ["9:00 to 17:00(Only Working Days)"],
       [""],
@@ -540,7 +540,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
 
   //Images
   doc.addImage("Bahria_Town_Logo.png", "PNG", 18, 25, 17, 20);
-  doc.addImage("urduinstructionmaint02.jpeg", "JPEG", 20, chargesY + 5, 170, 8);
+  doc.addImage("urduinstruction maint04.jpeg", "JPEG", 20, chargesY + 5, 170, 8);
   doc.addImage("scissors.png", "PNG", 178, NoticeY + 2, 3.8, 3.8);
   doc.addImage("scissors.png", "PNG", 178, bankcopyY+2, 3.8, 3.8);
 
