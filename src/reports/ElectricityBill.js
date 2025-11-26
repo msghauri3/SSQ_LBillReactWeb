@@ -35,6 +35,19 @@ export const generateElectricityPDF = (billingData, projects) => {
   const imgData = canvas.toDataURL("image/png");
   doc.addImage(imgData, "PNG", 70, 272, 70, 14);
 
+
+ // 🔹 Watermark: DUPLICATE BILL
+  doc.saveGraphicsState(); // <-- save current graphics state
+  doc.setGState(new doc.GState({ opacity: 1 })); // Only affects this block
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(40);
+  doc.setTextColor(200, 200, 200); // Light gray
+  doc.text("DUPLICATE BILL", 60, 90, { angle: 20 });
+  doc.text("DUPLICATE BILL", 32, 200, { angle: 20 });
+  doc.restoreGraphicsState(); // <-- restore so rest of PDF is normal
+
+
+
   //Header
   autoTable(doc, {
     head: [],
@@ -804,20 +817,12 @@ export const generateElectricityPDF = (billingData, projects) => {
 
   let HistoryY = doc.lastAutoTable.finalY + 3;
 
-  doc.addImage("urdumessage1.jpeg", "JPEG", 15, headerY + 47, 115, 30);
+  doc.addImage("urdumessage1.jpg", "JPG", 15, headerY + 47, 115, 30);
   doc.addImage("urdumessage3.png", "PNG", 21, duplicatelinkY + 49, 70, 14);
 
 
 
-  // 🔹 Watermark: DUPLICATE BILL
-  doc.saveGraphicsState(); // <-- save current graphics state
-  doc.setGState(new doc.GState({ opacity: 1 })); // Only affects this block
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(40);
-  doc.setTextColor(200, 200, 200); // Light gray
-  doc.text("DUPLICATE BILL", 60, 100, { angle: 20 });
-  doc.text("DUPLICATE BILL", 32, 210, { angle: 20 });
-  doc.restoreGraphicsState(); // <-- restore so rest of PDF is normal
+ 
 
   //Bank Copy
   autoTable(doc, {
@@ -1001,7 +1006,8 @@ export const generateElectricityPDF = (billingData, projects) => {
       ["Further Tax", `-                 ${electricityBill.furthertax}`],
       ["Retailer Tax", "-                 0"],
       ["Extra Tax", `-                 ${electricityBill.extraTax}`],
-      [{ content: "", colSpan: 2 }],
+      ["Income Tax", `-                 ${electricityBill.incomeTax ?? ""}`],
+      // [{ content: "", colSpan: 2 }],
       ["Current Bill", `${electricityBill.billAmount}`],
       ["Arrears", `${electricityBill.arrears}`],
       ["Total Payable", `${electricityBill.billAmountInDueDate}`],
@@ -1031,7 +1037,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       // Helper to merge style properties
       const setCell = (styles) => Object.assign(cell.styles, styles);
 
-      if (r <= 4 || (r >= 6 && r <= 8)) {
+      if (r <= 4 || (r >= 6 && r <= 9)) {
         setCell({
           fontSize: 8,
           cellPadding: { top: 2 },
@@ -1042,7 +1048,7 @@ export const generateElectricityPDF = (billingData, projects) => {
         setCell({
           fontSize: 9,
           halign: "left",
-          cellPadding: { top: 2 },
+          cellPadding: { top: 2.2 },
         });
       }
       if (r === 12 || r === 14) {
@@ -1059,23 +1065,20 @@ export const generateElectricityPDF = (billingData, projects) => {
     margin: { left: 74.5 },
     tableWidth: 55.5,
     body: [
-      ["UBL Bank(PK60 UNIL0109000201226209)"],
-      ["Faysal Bank(3130301900222504)"],
       ["Facilitation Center Bahria - Alfalah Plaza(only Cash)"],
-      [""],
       ["Facilitation Center Bahria Orchard(only Cash)"],
+      ["Corporate Head Office-Bahria Orchard (Only Cash)"],
       ["Bill Collection Timing From"],
       ["9:00 to 17:00(Only Working Days)"],
-      [""],
     ],
     theme: "plain",
     bodyStyles: {
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       valign: "middle",
-      fontSize: 6.5,
+      fontSize: 7.5,
       cellPadding: { top: 0.5 },
-      halign: "left",
+      halign: "center",
     },
   });
 
@@ -1136,11 +1139,15 @@ export const generateElectricityPDF = (billingData, projects) => {
     },
   });
 
+
+
+
+  
   // Images
   //doc.addImage("imageName", "type", x, y, width, height);
   doc.addImage("logo.png", "PNG", 15, 23, 18, 18);
   
-  doc.addImage("urdumessage2.png", "PNG", 99, duplicatelinkY + 47, 96, 23);
+  // doc.addImage("urdumessage2.png", "PNG", 99, duplicatelinkY + 47, 96, 23);
   doc.setFont("times", "normal");
   doc.setFontSize(12);
   doc.text("Note:", 21, duplicatelinkY + 48);

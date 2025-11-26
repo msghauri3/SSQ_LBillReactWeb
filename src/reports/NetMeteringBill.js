@@ -182,7 +182,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     },
   });
   let headerY = doc.lastAutoTable.finalY;
-   doc.addImage("urdumessage1.jpeg", "JPEG", 15, headerY + 53, 110, 23);
+   doc.addImage("urdumessage1.jpg", "JPG", 15, headerY + 53, 110, 23);
    doc.addImage("urdumessage2.png", "PNG", 25, headerY + 76, 96, 18);
 
   //Body-1
