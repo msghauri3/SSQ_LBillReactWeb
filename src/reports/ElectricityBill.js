@@ -320,7 +320,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: customerDetail.plotType?.toLowerCase() === "commercial" ? "59" : "51.5",
+          content: customerDetail.plotType?.toLowerCase() === "commercial" ? "60" : "51",
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
