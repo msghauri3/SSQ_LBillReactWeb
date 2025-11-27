@@ -1131,7 +1131,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     margin: { left: 74.5 },
     tableWidth: 55.5,
     body: [
-      ["UBL Bank(PK60 UNIL 0109000201226209)"],
+      
       [""],
       ["Facilitation Center Bahria Mohlanwal (only Cash)"],
       [""],
