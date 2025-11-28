@@ -1157,7 +1157,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     margin: { left: 26 },
     tableWidth: 60,
     body: [
-      [{ content: "Month", colSpan: 2 }, "Units", "Bill"],
+      [{ content: "Month", colSpan: 1 }, "Year" , "Units", "Bill"],
       [`${billHistory[0]?.billingMonth?.slice(0, 3)}`, `${billHistory[0]?.billingYear}`, `${billHistory[0]?.units}`, `${billHistory[0]?.bill}`],
       [`${billHistory[1]?.billingMonth?.slice(0, 3)}`, `${billHistory[1]?.billingYear}`, `${billHistory[1]?.units}`, `${billHistory[1]?.bill}`],
       [`${billHistory[2]?.billingMonth?.slice(0, 3)}`, `${billHistory[2]?.billingYear}`, `${billHistory[2]?.units}`, `${billHistory[2]?.bill}`],

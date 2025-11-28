@@ -195,12 +195,12 @@ const Billing = () => {
 
 
       // 🔧 Change base URL here manually
-      const baseUrl = "https://localhost:7108/api";
+      //const baseUrl = "https://localhost:7108/api";
       // const baseUrl = "http://172.20.228.2/api";
       // const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
       // const baseUrl = "http://34.31.174.65:5050/api";
       // const baseUrl = "http://103.175.122.32/api";
-      //  const baseUrl = "https://softwaredemo.space/api";
+        const baseUrl = "https://softwaredemo.space/api";
   
       
       
