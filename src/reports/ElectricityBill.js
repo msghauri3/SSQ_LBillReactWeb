@@ -139,7 +139,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       ],
       [
         electricityBill.customerNo,
-        "1",
+        electricityBill.mf,
         `${electricityBill.billingMonth} ${electricityBill.billingYear}`,
         {
           content: formatDate(electricityBill.readingDate),
@@ -304,7 +304,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0 } },
         },
         {
-          content: "",
+          content: `${electricityBill.mdiReading ?? ""}`,
           styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0 } },
         },
       ],
@@ -320,7 +320,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: customerDetail.plotType?.toLowerCase() === "commercial" ? "60" : "51",
+          content: `${electricityBill.unitRate}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -328,7 +328,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: "0",
+          content: `${electricityBill.deferredAmount ?? ""}`,
           colSpan: 2,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },

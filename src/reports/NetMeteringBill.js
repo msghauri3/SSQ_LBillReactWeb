@@ -110,7 +110,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         electricityBillsNetMeter.customerNo,
-        "1",
+        electricityBillsNetMeter.mf,
         `${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear}`,
         {
           content: formatDate(electricityBillsNetMeter.readingDate),
