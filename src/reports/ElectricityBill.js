@@ -139,7 +139,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       ],
       [
         electricityBill.customerNo,
-        electricityBill.mf,
+        electricityBill.mf ?? "",
         `${electricityBill.billingMonth} ${electricityBill.billingYear}`,
         {
           content: formatDate(electricityBill.readingDate),
@@ -320,7 +320,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `${electricityBill.unitRate}`,
+          content: `${electricityBill.unitRate ?? ""}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
