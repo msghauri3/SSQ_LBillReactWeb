@@ -37,7 +37,7 @@ const TopBar = () => {
   return (
     <div style={styles.topbar}>
       <div style={styles.left}>
-        <span>Bahria Town, Lahore Billing Sytem</span>
+        <span>Bahria Town, Lahore Billing System</span>
       </div>
       {/* <div style={styles.right}>
         <a
