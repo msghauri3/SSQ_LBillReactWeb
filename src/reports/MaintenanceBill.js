@@ -149,8 +149,8 @@ export const generateMaintenancePDF = (billingData, projects) => {
       ],
 
       [
-        { content: `${maintenanceBills.btNo}`, styles: {} },
-        { content: `${maintenanceBills.customerNo}`, styles: {} },
+        { content: `${customersMaintenance.btNo}`, styles: {} },
+        { content: `${customersMaintenance.customerNo}`, styles: {} },
         { content: "", colSpan: 2, styles: {} },
       ],
 
@@ -369,7 +369,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
       [
         { content: `Name : ${customersMaintenance.customerName} \nAddress :  ${customersMaintenance.ploNo}            ${customersMaintenance.block} \nSector:   ${customersMaintenance.sector} `, colSpan: 3, styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 }, fontStyle: "normal", fontSize: 8, halign: "left" } },
         { content: `Refrence Number \n ${customersMaintenance.customerNo}`, styles: { fontStyle: "normal", fontSize: 8, halign: "center" } },
-        { content: `${maintenanceBills.btNo}`, styles: { fontStyle: "normal", fontSize: 8, halign: "left" } },
+        { content: `${customersMaintenance.btNo}`, styles: { fontStyle: "normal", fontSize: 8, halign: "left" } },
       ],
 
 
@@ -430,7 +430,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
       [
         { content: `Name : ${customersMaintenance.customerName} \nAddress :  ${customersMaintenance.ploNo}              ${customersMaintenance.block} \nSector:   ${customersMaintenance.sector} `, colSpan: 3, styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 }, fontStyle: "normal", fontSize: 8, halign: "left" } },
         { content: `Refrence Number \n ${customersMaintenance.customerNo}`, styles: { fontStyle: "normal", fontSize: 8, halign: "center" } },
-        { content: `${maintenanceBills.btNo}`, styles: { fontStyle: "normal", fontSize: 8, halign: "left" } },
+        { content: `${customersMaintenance.btNo}`, styles: { fontStyle: "normal", fontSize: 8, halign: "left" } },
       ],
 
 
@@ -530,7 +530,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
 
   // Generate Barcode
   const canvas = document.createElement("canvas");
-  JsBarcode(canvas, `${maintenanceBills.btNo}${maintenanceBills.billingMonth}${maintenanceBills.billingYear}`, {
+  JsBarcode(canvas, `${customersMaintenance.btNo}${maintenanceBills.billingMonth}${maintenanceBills.billingYear}`, {
     format: "CODE39",
     displayValue: true,
     fontSize: 14,
@@ -551,7 +551,7 @@ export const generateMaintenancePDF = (billingData, projects) => {
   
   // window.open(doc.output("bloburl"), "_blank");
 
-  const fileName = `Maintenance ${maintenanceBills.btNo} ${maintenanceBills.billingMonth} ${maintenanceBills.billingYear} .pdf`;
+  const fileName = `Maintenance ${customersMaintenance.btNo} ${maintenanceBills.billingMonth} ${maintenanceBills.billingYear} .pdf`;
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 

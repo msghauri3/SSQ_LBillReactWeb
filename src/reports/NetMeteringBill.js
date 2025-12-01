@@ -109,7 +109,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         },
       ],
       [
-        electricityBillsNetMeter.customerNo,
+        customerDetail.customerNo,
         electricityBillsNetMeter.mf,
         `${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear}`,
         {
@@ -199,7 +199,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBillsNetMeter.btNo}`,
+          content: `${customerDetail.btNo}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
@@ -207,7 +207,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBillsNetMeter.installedOn}`,
+          content: `${customerDetail.installedOn}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -242,7 +242,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
-          content: `${electricityBillsNetMeter.meterType}`,
+          content: `${customerDetail.meterType}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
@@ -260,7 +260,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBillsNetMeter.meterNo}`,
+          content: `${customerDetail.meterNo}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
@@ -942,17 +942,17 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { fontStyle: "bold" },
         },
         { content: "Reference No", styles: {} },
-        { content: electricityBillsNetMeter.customerNo, styles: {} },
+        { content: customerDetail.customerNo, styles: {} },
       ],
       [
-        { content: electricityBillsNetMeter.customerName, colSpan: 2, styles: {} },
+        { content: customerDetail.customerName, colSpan: 2, styles: {} },
         {
-          content: `${customerDetail.ploNo}    /   ${electricityBillsNetMeter.block}    /    ${electricityBillsNetMeter.sector}`,
+          content: `${customerDetail.ploNo}    /   ${customerDetail.block}    /    ${customerDetail.sector}`,
           colSpan: 2,
           styles: {},
         },
         { content: "Meter Number", styles: {} },
-        { content: electricityBillsNetMeter.meterNo, styles: {} },
+        { content: customerDetail.meterNo, styles: {} },
       ],
       [
         { content: "Bill Month", colSpan: 2, styles: {} },
@@ -974,7 +974,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           content: formatDate(electricityBillsNetMeter.dueDate),
           styles: { fontStyle: "bold" },
         },
-        { content: electricityBillsNetMeter.btNo, styles: { fontStyle: "bold" } },
+        { content: customerDetail.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
           content: electricityBillsNetMeter.billAmountAfterDueDate,
@@ -1021,17 +1021,17 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { fontStyle: "bold" },
         },
         { content: "Reference No", styles: {} },
-        { content: electricityBillsNetMeter.customerNo, styles: {} },
+        { content: customerDetail.customerNo, styles: {} },
       ],
       [
-        { content: electricityBillsNetMeter.customerName, colSpan: 2, styles: {} },
+        { content: customerDetail.customerName, colSpan: 2, styles: {} },
         {
-          content: `${customerDetail.ploNo}    /   ${electricityBillsNetMeter.block}    /    ${electricityBillsNetMeter.sector}`,
+          content: `${customerDetail.ploNo}    /   ${customerDetail.block}    /    ${customerDetail.sector}`,
           colSpan: 2,
           styles: {},
         },
         { content: "Meter Number", styles: {} },
-        { content: electricityBillsNetMeter.meterNo, styles: {} },
+        { content: customerDetail.meterNo, styles: {} },
       ],
       [
         { content: "Bill Month", colSpan: 2, styles: {} },
@@ -1053,7 +1053,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           content: formatDate(electricityBillsNetMeter.dueDate),
           styles: { fontStyle: "bold" },
         },
-        { content: electricityBillsNetMeter.btNo, styles: { fontStyle: "bold" } },
+        { content: customerDetail.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
           content: electricityBillsNetMeter.billAmountAfterDueDate,
@@ -1227,7 +1227,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
 
 
 
-  const fileName = `NetMetering ${electricityBillsNetMeter.btNo} ${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear} .pdf`;
+  const fileName = `NetMetering ${customerDetail.btNo} ${electricityBillsNetMeter.billingMonth} ${electricityBillsNetMeter.billingYear} .pdf`;
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 

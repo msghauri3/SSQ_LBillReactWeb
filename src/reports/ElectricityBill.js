@@ -25,7 +25,7 @@ export const generateElectricityPDF = (billingData, projects) => {
   const canvas = document.createElement("canvas");
   JsBarcode(
     canvas,
-    `${electricityBill.btNo}${electricityBill.billingMonth}${electricityBill.billingYear}`,
+    `${customerDetail.btNo}${electricityBill.billingMonth}${electricityBill.billingYear}`,
     {
       format: "CODE39",
       displayValue: true,
@@ -228,15 +228,15 @@ export const generateElectricityPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBill.btNo}`,
+          content: `${customerDetail.btNo}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `${customerDetail.plotType}`,
+          content: `${customerDetail.tariffName}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBill.installedOn}`,
+          content: `${customerDetail.installedOn}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -271,7 +271,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
-          content: `${electricityBill.meterType}`,
+          content: `${customerDetail.meterType}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0 } },
         },
         {
@@ -288,7 +288,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       ],
       [
         {
-          content: `${electricityBill.meterNo}`,
+          content: `${customerDetail.meterNo}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
@@ -848,14 +848,14 @@ export const generateElectricityPDF = (billingData, projects) => {
         { content: electricityBill.customerNo, styles: {} },
       ],
       [
-        { content: electricityBill.customerName, colSpan: 2, styles: {} },
+        { content: customerDetail.customerName, colSpan: 2, styles: {} },
         {
-          content: `${customerDetail.ploNo}    /   ${electricityBill.block}    /    ${electricityBill.sector}`,
+          content: `${customerDetail.ploNo}    /   ${customerDetail.block}    /    ${customerDetail.sector}`,
           colSpan: 2,
           styles: {},
         },
         { content: "Meter Number", styles: {} },
-        { content: electricityBill.meterNo, styles: {} },
+        { content: customerDetail.meterNo, styles: {} },
       ],
       [
         { content: "Bill Month", colSpan: 2, styles: {} },
@@ -877,7 +877,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           content: formatDate(electricityBill.dueDate),
           styles: { fontStyle: "bold" },
         },
-        { content: electricityBill.btNo, styles: { fontStyle: "bold" } },
+        { content: customerDetail.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
           content: electricityBill.billAmountAfterDueDate,
@@ -927,14 +927,14 @@ export const generateElectricityPDF = (billingData, projects) => {
         { content: electricityBill.customerNo, styles: {} },
       ],
       [
-        { content: electricityBill.customerName, colSpan: 2, styles: {} },
+        { content: customerDetail.customerName, colSpan: 2, styles: {} },
         {
-          content: `${customerDetail.ploNo}    /   ${electricityBill.block}    /    ${electricityBill.sector}`,
+          content: `${customerDetail.ploNo}    /   ${customerDetail.block}    /    ${customerDetail.sector}`,
           colSpan: 2,
           styles: {},
         },
         { content: "Meter Number", styles: {} },
-        { content: electricityBill.meterNo, styles: {} },
+        { content: customerDetail.meterNo, styles: {} },
       ],
       [
         { content: "Bill Month", colSpan: 2, styles: {} },
@@ -956,7 +956,7 @@ export const generateElectricityPDF = (billingData, projects) => {
           content: formatDate(electricityBill.dueDate),
           styles: { fontStyle: "bold" },
         },
-        { content: electricityBill.btNo, styles: { fontStyle: "bold" } },
+        { content: customerDetail.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
           content: electricityBill.billAmountAfterDueDate,
@@ -1164,7 +1164,7 @@ export const generateElectricityPDF = (billingData, projects) => {
 
 
 
-  const fileName = `Electricity ${electricityBill.btNo} ${electricityBill.billingMonth} ${electricityBill.billingYear} .pdf`;
+  const fileName = `Electricity ${customerDetail.btNo} ${electricityBill.billingMonth} ${electricityBill.billingYear} .pdf`;
   const blob = doc.output("blob");
   const blobUrl = URL.createObjectURL(blob);
 
