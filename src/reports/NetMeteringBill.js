@@ -1097,7 +1097,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       ["Sales Tax", `-                 ${electricityBillsNetMeter.salesTax ?? ""}`],
       ["Extra Tax", `-                 ${electricityBillsNetMeter.extraTax ?? ""}`],
       ["Income Tax", `-                 ${electricityBillsNetMeter.incomeTax ?? ""}`],
-      [{ content: `FPA (Feb-24 @4.9213)`, styles: { fontSize: 7.5 } }, `-                ${electricityBillsNetMeter.fpacharges}`],
+      [{ content: `FPA ${electricityBillsNetMeter.fpaRate}`, styles: { fontSize: 7.5 } }, `-                ${electricityBillsNetMeter.fpacharges}`],
       ["NM(Cur-crdt)", `-                ${electricityBillsNetMeter.nmPreviousCredit}`],
       ["NM(Pre-Crdt)", `-                ${electricityBillsNetMeter.nmCurrentCredit}`],
       [{ content: "NM(Total-Crdt) Remaining", styles: { fontSize: 7.4 } }, `-                ${electricityBillsNetMeter.nmTotalCredit}`],
