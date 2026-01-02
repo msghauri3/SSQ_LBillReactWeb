@@ -15,7 +15,7 @@ const formatDate = (dateString) => {
 export const generateMaintenancePDF = (billingData, projects) => {
 
   // 🔹 Step 1: Extract both objects from API response
-  const { maintenanceBills, customersMaintenance } = billingData[0];
+  const { maintenanceBills, customersMaintenance } = billingData;
 
   const doc = new jsPDF("p", "mm", "a4");
 
