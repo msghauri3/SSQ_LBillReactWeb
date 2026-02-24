@@ -994,7 +994,7 @@ export const generateElectricityPDF = (billingData, projects) => {
       ["Energy Charges", `-                 ${electricityBill.energyCoast}`],
       ["GST", `-                 ${electricityBill.gst}`],
       [`OPC @ ${electricityBill.opcRate}`, `-                 ${electricityBill.opc}`],
-      ["PTV Fee", `-                 ${electricityBill.ptvfee}`],
+      ["Fixed Charges", `-                 ${electricityBill.ptvfee}`],
       ["FPA", `-                 ${electricityBill.fpacharges}`],
       [
         {
