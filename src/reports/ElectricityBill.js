@@ -249,7 +249,7 @@ export const generateElectricityPDF = (billingData, projects) => {
             fontSize: 10,
           },
         },
-        { content: "", rowSpan: 9, styles: {} },
+        { content: "", rowSpan: 10, styles: {} },
       ],
       [
         {
@@ -292,11 +292,15 @@ export const generateElectricityPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0.1 } },
         },
         {
-          content: `${electricityBill.previousReading1}`,
+          content: electricityBill.faultyMeter === "Meter Defective"
+            ? ""
+            : `${electricityBill.previousReading1 ?? ""}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0 } },
         },
         {
-          content: `${electricityBill.currentReading1}`,
+          content: electricityBill.faultyMeter === "Meter Defective"
+            ? ""
+            : `${electricityBill.currentReading1 ?? ""}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0 } },
         },
         {
@@ -346,11 +350,26 @@ export const generateElectricityPDF = (billingData, projects) => {
             "Complaint Office (Mohlanwal) 042-35341646\nComplaint Office (Orchard)     042-35470996   042-35470997\nComplaint Office (Nasheman) 042-35935515",
           colSpan: 5,
           styles: {
-            lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 },
+            lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 },
             cellPadding: 0.5,
             fontSize: 8,
             fontStyle: "bold",
             halign: "left",
+            valign: "top",
+          },
+        },
+      ],
+      [
+        {
+          content: electricityBill.faultyMeter ?? "",
+          colSpan: 5,
+          styles: {
+            lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 },
+            cellPadding: { top: 0.5, right: 2, bottom: 0.5, left: 0.5 },
+            fontSize: 10,
+            fontStyle: "bold",
+            halign: "right",
+            valign: "top",
           },
         },
       ],
@@ -467,9 +486,11 @@ export const generateElectricityPDF = (billingData, projects) => {
       // Urdu text or image row
       if (r === 8) {
         setCell({
-          minCellHeight: 30,
+          minCellHeight: 25,
         });
       }
+
+      
     },
   });
 
@@ -817,7 +838,7 @@ export const generateElectricityPDF = (billingData, projects) => {
 
   let HistoryY = doc.lastAutoTable.finalY + 3;
 
-  doc.addImage("urdumessage1.jpg", "JPG", 15, headerY + 47, 115, 30);
+  doc.addImage("urdumessage1.jpg", "JPG", 15, headerY + 47, 115, 25);
   doc.addImage("urdumessage3.png", "PNG", 21, duplicatelinkY + 49, 70, 14);
 
 
