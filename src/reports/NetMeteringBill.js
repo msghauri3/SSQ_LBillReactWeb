@@ -18,6 +18,18 @@ export const generateNetMeteringPDF = (billingData, projects) => {
 
   const doc = new jsPDF("p", "mm", "a4");
 
+  const isCredit = electricityBillsNetMeter.nmTotalCredit < 0;
+
+  // 🔹 Watermark: DUPLICATE BILL
+  doc.saveGraphicsState(); // <-- save current graphics state
+  doc.setGState(new doc.GState({ opacity: 1 })); // Only affects this block
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(40);
+  doc.setTextColor(200, 200, 200); // Light gray
+  doc.text("DUPLICATE BILL", 60, 90, { angle: 20 });
+  doc.text("DUPLICATE BILL", 32, 200, { angle: 20 });
+  doc.restoreGraphicsState(); // <-- restore so rest of PDF is normal
+
   
   //Header
   autoTable(doc, {
@@ -800,44 +812,62 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         },
       ],
       [
-        { content: "Category", styles: {} },
-        { content: "Max Permissible Export Units per Month",colSpan: 4, styles: {} }
+        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
       ],
       [
-        { content: "", styles: {} },
-        { content: "Mar", styles: {} },
-        { content: "Apr", styles: {} },
-        { content: "May", styles: {} },
-        { content: "June", styles: {} },
+        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
       ],
       [
-        { content: "5 Marla", styles: {} },
-        { content: "375", styles: {} },
-        { content: "375", styles: {} },
-        { content: "500", styles: {} },
-        { content: "500", styles: {} },
+        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
       ],
       [
-        { content: "8 Marla", styles: {} },
-        { content: "450", styles: {} },
-        { content: "450", styles: {} },
-        { content: "600", styles: {} },
-        { content: "600", styles: {} },
+        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
       ],
       [
-        { content: "10 Marla", styles: {} },
-        { content: "600", styles: {} },
-        { content: "600", styles: {} },
-        { content: "800", styles: {} },
-        { content: "800", styles: {} },
+        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
       ],
       [
-        { content: "Kanal & Above", styles: {} },
-        { content: "900", styles: {} },
-        { content: "900", styles: {} },
-        { content: "1200", styles: {} },
-        { content: "1200", styles: {} },
+        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
       ]
+      // [
+      //   { content: "Category", styles: {} },
+      //   { content: "Max Permissible Export Units per Month",colSpan: 4, styles: {} }
+      // ],
+      // [
+      //   { content: "", styles: {} },
+      //   { content: "Mar", styles: {} },
+      //   { content: "Apr", styles: {} },
+      //   { content: "May", styles: {} },
+      //   { content: "June", styles: {} },
+      // ],
+      // [
+      //   { content: "5 Marla", styles: {} },
+      //   { content: "375", styles: {} },
+      //   { content: "375", styles: {} },
+      //   { content: "500", styles: {} },
+      //   { content: "500", styles: {} },
+      // ],
+      // [
+      //   { content: "8 Marla", styles: {} },
+      //   { content: "450", styles: {} },
+      //   { content: "450", styles: {} },
+      //   { content: "600", styles: {} },
+      //   { content: "600", styles: {} },
+      // ],
+      // [
+      //   { content: "10 Marla", styles: {} },
+      //   { content: "600", styles: {} },
+      //   { content: "600", styles: {} },
+      //   { content: "800", styles: {} },
+      //   { content: "800", styles: {} },
+      // ],
+      // [
+      //   { content: "Kanal & Above", styles: {} },
+      //   { content: "900", styles: {} },
+      //   { content: "900", styles: {} },
+      //   { content: "1200", styles: {} },
+      //   { content: "1200", styles: {} },
+      // ]
     ],
     theme: "grid",
     bodyStyles: {
@@ -960,7 +990,8 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         { content: "Barcode No.", styles: {} },
         { content: "Total Payable", styles: {} },
         {
-          content: electricityBillsNetMeter.billAmountInDueDate,
+          // content: electricityBillsNetMeter.billAmountInDueDate,
+          content: `${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`,
           styles: { fontStyle: "bold" },
         },
       ],
@@ -977,7 +1008,8 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         { content: customerDetail.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
-          content: electricityBillsNetMeter.billAmountAfterDueDate,
+          // content: electricityBillsNetMeter.billAmountAfterDueDate,
+          content: `${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`,
           styles: { fontStyle: "bold" },
         }
       ]
@@ -1039,7 +1071,8 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         { content: "Barcode No.", styles: {} },
         { content: "Total Payable", styles: {} },
         {
-          content: electricityBillsNetMeter.billAmountInDueDate,
+          // content: electricityBillsNetMeter.billAmountInDueDate,
+          content: `${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`,
           styles: { fontStyle: "bold" },
         },
       ],
@@ -1056,7 +1089,8 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         { content: customerDetail.btNo, styles: { fontStyle: "bold" } },
         { content: "Late Payment", styles: {} },
         {
-          content: electricityBillsNetMeter.billAmountAfterDueDate,
+          // content: electricityBillsNetMeter.billAmountAfterDueDate,
+          content: `${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`,
           styles: { fontStyle: "bold" },
         },
       ],
@@ -1084,30 +1118,31 @@ export const generateNetMeteringPDF = (billingData, projects) => {
 
 
   //Electricity Table
-  // const isCredit = electricityBillsNetMeter.nmTotalCredit < 0;
+
   autoTable(doc, {
     startY: headerY + 3,
     margin: { left: 131 },
     tableWidth: 64.75,
     body: [
       ["Energy Charges", `-                 ${electricityBillsNetMeter.unitsAmount}`],
-      [`OPC @ ${electricityBillsNetMeter.opcRate}    -    ${electricityBillsNetMeter.opc}`, `  GST    -    ${electricityBillsNetMeter.gst}`],
-      ["PTV Fee", `-                 ${electricityBillsNetMeter.ptvfee}`],
+      // [`OPC @ ${electricityBillsNetMeter.opcRate}    -    ${electricityBillsNetMeter.opc}`, `  GST    -    ${electricityBillsNetMeter.gst}`],
+      ["GST", `-                 ${electricityBillsNetMeter.gst}`],
+      [`OPC @ ${electricityBillsNetMeter.opcRate}`, `-                 ${electricityBillsNetMeter.opc}`],
       ["Further Tax", `-                 ${electricityBillsNetMeter.furthertax}`],
       ["Sales Tax", `-                 ${electricityBillsNetMeter.salesTax ?? ""}`],
       ["Extra Tax", `-                 ${electricityBillsNetMeter.extraTax ?? ""}`],
       ["Income Tax", `-                 ${electricityBillsNetMeter.incomeTax ?? ""}`],
-      [{ content: `FPA ${electricityBillsNetMeter.fpaRate}`, styles: { fontSize: 7.5 } }, `-                ${electricityBillsNetMeter.fpacharges}`],
-      ["NM(Cur-crdt)", `-                ${electricityBillsNetMeter.nmPreviousCredit}`],
-      ["NM(Pre-Crdt)", `-                ${electricityBillsNetMeter.nmCurrentCredit}`],
+      [{ content: "FPA", styles: { fontSize: 7.5 } }, `-                 ${electricityBillsNetMeter.fpacharges}`],
+      ["NM(Cur-crdt)", `-                ${electricityBillsNetMeter.nmCurrentCredit}`],
+      ["NM(Pre-Crdt)", `-                ${electricityBillsNetMeter.nmPreviousCredit}`],
       [{ content: "NM(Total-Crdt) Remaining", styles: { fontSize: 7.4 } }, `-                ${electricityBillsNetMeter.nmTotalCredit}`],
       ["Current Bill", `-                 ${electricityBillsNetMeter.billAmount}`],
       ["Arrears", `-                 ${electricityBillsNetMeter.arrears}`],
-      // ["Total Payable", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`],
-      ["Total Payable", `-                 ${electricityBillsNetMeter.billAmountInDueDate}`],
+      ["Total Payable", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`],
+      // ["Total Payable", `-                 ${electricityBillsNetMeter.billAmountInDueDate}`],
       ["L.P Surcharge", `-                 ${electricityBillsNetMeter.billSurcharge}`],
-      // ["Late Payment", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`],
-      ["Late Payment", `-                 ${electricityBillsNetMeter.billAmountAfterDueDate}`],
+      ["Late Payment", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`],
+      // ["Late Payment", `-                 ${electricityBillsNetMeter.billAmountAfterDueDate}`],
     ],
     theme: "grid",
     bodyStyles: {
