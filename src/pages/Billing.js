@@ -200,7 +200,7 @@ const Billing = () => {
       // const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
       // const baseUrl = "http://34.31.174.65:5050/api";
       // const baseUrl = "http://103.175.122.32:82/api";
-      const baseUrl = "https://softwaredemo.space:82/api";
+      const baseUrl = "https://softwaredemo.tech:82/api";
   
       
       
