@@ -66,7 +66,23 @@ const Billing = () => {
   };
 
   const handleBillingTypeChange = (type) => {
-    setBillingData((prev) => ({ ...prev, billingType: type }));
+    setBillingData((prev) => {
+      let project = prev.project;
+
+      // Electricity → Maintenance: "Mohlanwal" is not a valid maintenance option
+      if (type === "maintenance" && project === "Mohlanwal") {
+        project = "";
+      }
+      // Maintenance → Electricity: map residential/commercial back to "Mohlanwal"
+      else if (
+        type === "electricity" &&
+        (project === "MohlanwalResidential" || project === "MohlanwalCommercial")
+      ) {
+        project = "Mohlanwal";
+      }
+
+      return { ...prev, billingType: type, project };
+    });
     if (error) setError("");
   };
 
@@ -196,62 +212,26 @@ const Billing = () => {
 
       // 🔧 Change base URL here manually
       // const baseUrl = "https://localhost:7108/api";
-      // const baseUrl = "http://172.20.228.2/api";
-      // const baseUrl = "https://btbilling-f9g3ahd4gpexhxha.canadacentral-01.azurewebsites.net/api";
-      // const baseUrl = "http://34.31.174.65:5050/api";
-      // const baseUrl = "http://103.175.122.32:82/api";
-      const baseUrl = "https://softwaredemo.tech:82/api";
+      const baseUrl = "https://softwaredemo.tech:82/api"; // deploy par ye use karein
   
       
       
-      const maintenanceUrl = `${baseUrl}/MaintenanceBill?btNo=${formattedBTNo}&project=${projectForApi}`;
-      const netMeterUrl =    `${baseUrl}/ElectricityBillsNetMeter?BTNo=${formattedBTNo}&Project=${projectForApi}`;
-      const electricityUrl = `${baseUrl}/ElectricityBill?btNo=${formattedBTNo}&project=${projectForApi}`;
-      let apiUrl = "";
-      let pdfFunction = null;
+      const maintenanceUrl =         `${baseUrl}/MaintenanceBill?btNo=${formattedBTNo}&project=${projectForApi}`;
+      const electricityNetMeterUrl = `${baseUrl}/Electricity_NetMeterBill?BTNo=${formattedBTNo}&Project=${projectForApi}`;
 
       // ---------------------------------------------------
-      // 1️⃣ STEP: Maintenance
+      // 1️⃣ STEP: Pick endpoint based on billing type
+      //    Electricity + Net Metering ab ek hi combined API se aata hai,
+      //    is liye koi extra probe call nahi (no 404 in console).
       // ---------------------------------------------------
-      if (billingData.billingType === "maintenance") {
-        apiUrl = maintenanceUrl
-        pdfFunction = generateMaintenancePDF;
-      }
-
-      // ---------------------------------------------------
-      // 2️⃣ STEP: Electricity / Net Metering Detection
-      // ---------------------------------------------------
-      else if (billingData.billingType === "electricity") {
-
-        const netResponse = await fetch(netMeterUrl);
-
-        if (netResponse.ok) {
-          const netData = await netResponse.json();
-
-          if (netData && netData.electricityBillsNetMeter) {
-            apiUrl = netMeterUrl;
-            pdfFunction = generateNetMeteringPDF;
-
-          } else {
-            apiUrl = electricityUrl
-            pdfFunction = generateElectricityPDF;
-          }
-        } else {
-          apiUrl = electricityUrl
-          pdfFunction = generateElectricityPDF;
-        }
-      }
+      const apiUrl =
+        billingData.billingType === "maintenance"
+          ? maintenanceUrl
+          : electricityNetMeterUrl;
 
       // ---------------------------------------------------
-      // 3️⃣ STEP: Validate API selection
+      // 2️⃣ STEP: Fetch data
       // ---------------------------------------------------
-      if (!apiUrl || !pdfFunction) {
-        setError("Unable to determine which bill to generate.");
-        setLoading(false);
-        return;
-      }
-
-      // console.log("🌐 Fetching Data From:", apiUrl);
       const response = await fetch(apiUrl);
 
       if (response.status === 404) {
@@ -262,18 +242,51 @@ const Billing = () => {
 
       if (!response.ok) throw new Error("Failed to fetch bill data");
 
-      const data = await response.json();
+      const result = await response.json();
 
-      if (!data || Object.keys(data).length === 0) {
+      if (!result || Object.keys(result).length === 0) {
         setError("No bill data found.");
         setLoading(false);
         return;
       }
 
       // ---------------------------------------------------
-      // 4️⃣ STEP: Generate PDF
+      // 3️⃣ STEP: Maintenance (direct response)
       // ---------------------------------------------------
-      pdfFunction(data, projects);
+      if (billingData.billingType === "maintenance") {
+        generateMaintenancePDF(result, projects);
+        return;
+      }
+
+      // ---------------------------------------------------
+      // 4️⃣ STEP: Electricity / Net Metering (combined API wrapper)
+      //    { found, billType, data: { electricityBill | electricityBillsNetMeter, ... } }
+      // ---------------------------------------------------
+      if (!result.found || !result.data) {
+        setError("No bill found for this BTNo and Project.");
+        setLoading(false);
+        return;
+      }
+
+      const billData = result.data;
+      let pdfFunction = null;
+
+      if (result.billType === "NetMeter" || billData.electricityBillsNetMeter) {
+        pdfFunction = generateNetMeteringPDF;
+      } else if (result.billType === "Normal" || billData.electricityBill) {
+        pdfFunction = generateElectricityPDF;
+      }
+
+      if (!pdfFunction) {
+        setError("No bill found for this BTNo and Project.");
+        setLoading(false);
+        return;
+      }
+
+      // ---------------------------------------------------
+      // 5️⃣ STEP: Generate PDF
+      // ---------------------------------------------------
+      pdfFunction(billData, projects);
     } catch (err) {
       // console.error("❌ Error:", err);
       setError("Error fetching bill data. Please try again.");
