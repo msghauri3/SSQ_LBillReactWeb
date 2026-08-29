@@ -1,0 +1,93 @@
+```yaml
+name: Deploy React Website to GCP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 1. Get latest code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+
+      # 4. Build React application
+      - name: Build React application
+        run: npm run build
+
+
+      # 5. Configure SSH
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/gcp_key
+
+          chmod 600 ~/.ssh/gcp_key
+
+          ssh-keyscan -H "${{ secrets.VM_HOST }}" >> ~/.ssh/known_hosts
+
+
+      # 6. Create temporary deployment folder on GCP
+      - name: Prepare temporary folder
+        run: |
+          ssh \
+            -i ~/.ssh/gcp_key \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
+            "rm -rf /tmp/lbill_web_react_deploy && mkdir -p /tmp/lbill_web_react_deploy"
+
+
+      # 7. Upload React build to GCP
+      - name: Upload React build
+        run: |
+          scp \
+            -i ~/.ssh/gcp_key \
+            -r ./build/* \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/tmp/lbill_web_react_deploy/
+
+
+      # 8. Deploy build files
+      - name: Deploy to website folder
+        run: |
+          ssh \
+            -i ~/.ssh/gcp_key \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
+            "cp -r /tmp/lbill_web_react_deploy/* /var/www/lbill_web_react/"
+
+
+      # 9. Clean temporary files
+      - name: Cleanup
+        run: |
+          ssh \
+            -i ~/.ssh/gcp_key \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
+            "rm -rf /tmp/lbill_web_react_deploy"
+
+
+      # 10. Verify deployment
+      - name: Verify website
+        run: |
+          ssh \
+            -i ~/.ssh/gcp_key \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
+            "test -f /var/www/lbill_web_react/index.html"
+```
