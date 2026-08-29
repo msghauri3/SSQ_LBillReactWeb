@@ -1,4 +1,3 @@
-```yaml
 name: Deploy React Website to GCP
 
 on:
@@ -18,7 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -33,7 +32,13 @@ jobs:
           chmod 600 ~/.ssh/gcp_key
           ssh-keyscan -H "${{ secrets.VM_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Prepare temporary folder
+      - name: Test SSH connection
+        run: |
+          ssh -i ~/.ssh/gcp_key \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
+            "echo SSH connection successful"
+
+      - name: Prepare deployment folder
         run: |
           ssh -i ~/.ssh/gcp_key \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
@@ -41,16 +46,17 @@ jobs:
 
       - name: Upload React build
         run: |
-          scp -i ~/.ssh/gcp_key -r ./build/* \
+          scp -i ~/.ssh/gcp_key \
+            -r ./build/. \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/tmp/lbill_web_react_deploy/
 
-      - name: Deploy to website folder
+      - name: Deploy React files
         run: |
           ssh -i ~/.ssh/gcp_key \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
-            "cp -r /tmp/lbill_web_react_deploy/* /var/www/lbill_web_react/"
+            "cp -rf /tmp/lbill_web_react_deploy/. /var/www/lbill_web_react/"
 
-      - name: Cleanup
+      - name: Cleanup temporary files
         run: |
           ssh -i ~/.ssh/gcp_key \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
@@ -60,5 +66,4 @@ jobs:
         run: |
           ssh -i ~/.ssh/gcp_key \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
-            "test -f /var/www/lbill_web_react/index.html"
-```
+            "test -f /var/www/lbill_web_react/index.html && echo 'Deployment successful'"
