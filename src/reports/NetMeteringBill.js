@@ -1,6 +1,7 @@
 // src/reports/electricityBillsNetMeter.js
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import JsBarcode from "jsbarcode";
 
 // ✅ Reusable date formatting function
 const formatDate = (dateString) => {
@@ -17,6 +18,20 @@ export const generateNetMeteringPDF = (billingData, projects) => {
 
 
   const doc = new jsPDF("p", "mm", "a4");
+
+  // Generate Barcode
+  const canvas = document.createElement("canvas");
+  JsBarcode(
+    canvas,
+    `${customerDetail.btNo}${electricityBillsNetMeter.billingMonth}${electricityBillsNetMeter.billingYear}`,
+    {
+      format: "CODE39",
+      displayValue: true,
+      fontSize: 14,
+    }
+  );
+  const imgData = canvas.toDataURL("image/png");
+  doc.addImage(imgData, "PNG", 70, 272, 70, 14);
 
   const isCredit = electricityBillsNetMeter.nmTotalCredit < 0;
 
@@ -97,12 +112,17 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       [
         {
           content: `  Invoice No: ${electricityBillsNetMeter.invoiceNo}`,
-          colSpan: 3,
+          colSpan: 2,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
         },
         {
           content: `Valid Date: ${formatDate(electricityBillsNetMeter.validDate)}`,
-          colSpan: 3,
+          colSpan: 2,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: `  NM Instal Date : ${formatDate(electricityBillsNetMeter.nmInstallDate)}`,
+          colSpan: 2,
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
@@ -194,8 +214,8 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     },
   });
   let headerY = doc.lastAutoTable.finalY;
-   doc.addImage("urdumessage1.jpg", "JPG", 15, headerY + 53, 110, 23);
-   doc.addImage("urdumessage2.png", "PNG", 25, headerY + 76, 96, 18);
+   doc.addImage("urdumessage1.jpg", "JPG", 15, headerY + 57, 110, 28);
+  //  doc.addImage("urdumessage2.png", "PNG", 25, headerY + 76, 96, 18);
 
   //Body-1
   autoTable(doc, {
@@ -219,7 +239,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${customerDetail.installedOn}`,
+          content: `${formatDate(customerDetail.installedOn)}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -251,7 +271,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       [
         {
           content: "BTL FEEDER - 1",
-          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 } },
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 }},
         },
         {
           content: `${customerDetail.meterType}`,
@@ -349,50 +369,83 @@ export const generateNetMeteringPDF = (billingData, projects) => {
         }
       ],
       [
-        { content: "Units", styles: {} },
-        { content: "Rate", styles: {} },
-        { content: "Amount", styles: {} },
         { content: "", styles: {} },
+        { content: "Off Peak", styles: {} },
+        { content: "Peak", styles: {} },
+        { content: "Rate", styles: {} },
         { content: "Units Consumed", colSpan: 2, styles: {} },
       ],
       [
         {
-          content: `${electricityBillsNetMeter.sumUnitsImport}`,
+          content: "Import (KWH)",
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0.1 } },
         },
         {
+          content: `${electricityBillsNetMeter.difference2}`,
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: `${electricityBillsNetMeter.difference1}`,
+          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
+        },
+         {
           content: `${electricityBillsNetMeter.sumRateImport}`,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBillsNetMeter.sumAmountImport}`,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
-        },
-         {
-          content: `Import Units`,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
-        },
-        {
-          content: "",
+          content:
+            electricityBillsNetMeter.creditAmount == null ||
+              electricityBillsNetMeter.creditAmount === 0
+              ? ""
+              : `${electricityBillsNetMeter.fineType} ${Number(
+                electricityBillsNetMeter.creditAmount
+              )
+                .toFixed(8)
+                .replace(/\.?0+$/, "")}`,
           colSpan: 2,
-          styles: { lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 } },
+          styles: {
+            lineWidth: { top: 0.1, right: 0, bottom: 0, left: 0 }
+          },
         },
       ],
       [
         {
-          content: `${electricityBillsNetMeter.sumUnitsExport}`,
+          content: `Export (KWH)`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 } },
         },
         {
-          content: `${electricityBillsNetMeter.sumRateExport}`,
+          content: `${electricityBillsNetMeter.differenceSolar}`,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
-          content: `${electricityBillsNetMeter.sumAmountExport}`,
+          content: ``,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
          {
-          content: `Export Units`,
+          content: ``,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: "",
+          colSpan: 2,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+      ],
+      [
+        {
+          content: `Remaning`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0.1 }, halign: "left" },
+        },
+        {
+          content: `${electricityBillsNetMeter.sumUnitsExport}`,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+        {
+          content: ``,
+          styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
+        },
+         {
+          content: ``,
           styles: { lineWidth: { top: 0, right: 0, bottom: 0, left: 0 } },
         },
         {
@@ -411,7 +464,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       [
         {
           content:
-            "Complaint Office (Mohlanwal) 042-35341646\nComplaint Office (Orchard)     042-35470996   042-35470997\nComplaint Office (Nasheman) 042-35935515",
+            "Complaint Office (Mohlanwal)  042-35341646\nComplaint Office (Orchard)      042-35470996   042-35470997\nComplaint Office (Nasheman)  042-35935515",
           colSpan: 6,
           styles: {
             lineWidth: { top: 0, right: 0, bottom: 0.1, left: 0.1 },
@@ -502,7 +555,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           valign: "top",
         });
       }
-      if ((r >= 5 && r <= 7)|| (r >= 9 && r <=10)) {
+      if ((r >= 5 && r <= 7)|| (r >= 9 && r <=11)) {
         setCell({
           // minCellHeight: 6,
           fontSize: 8,
@@ -526,19 +579,26 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       if (r === 3) {
         setCell({
           minCellHeight: 15,
-          fontSize: 8,
+          fontSize: 7.2,
           cellPadding: 0,
           valign: "top",
         });
       }
 
       // Urdu text or image row
-      if (r === 11) {
+      if (r === 12) {
         setCell({
-          minCellHeight: 40,
+          minCellHeight: 30,
+        });
+      }
+
+      if (r === 11 && c <= 0) {
+        setCell({
+          cellPadding: { left: 1.5 },
         });
       }
     },
+
   });
 
 
@@ -560,7 +620,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           },
         },
         {
-          content: "Quries regarding electric bills dial      ",
+          content: "Quries regarding electric bills dial     ",
           styles: {
             lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 },
             halign: "right",
@@ -638,23 +698,28 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     startY: doc.lastAutoTable.finalY,
     head: [],
     body: [
+      // [
+      //   {
+      //     content: "",
+      //     rowSpan: 22,
+      //     styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0.1 } },
+      //   },
+      //   {
+      //     content:
+      //       "> In case of Gazetted Holidays on due date, bill will be received by bank on next working day.",
+      //     colSpan: 5,
+      //     styles: {
+      //       lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 },
+      //       cellPadding: { top: 0.5 },
+      //     },
+      //   },
+      // ],
       [
-        {
+         {
           content: "",
           rowSpan: 22,
           styles: { lineWidth: { top: 0.1, right: 0, bottom: 0.1, left: 0.1 } },
         },
-        {
-          content:
-            "> In case of Gazetted Holidays on due date, bill will be received by bank on next working day.",
-          colSpan: 5,
-          styles: {
-            lineWidth: { top: 0.1, right: 0.1, bottom: 0, left: 0 },
-            cellPadding: { top: 0.5 },
-          },
-        },
-      ],
-      [
         {
           content:
             "> In case of non-payment of electric bill for one month your electricity will be disconnected.",
@@ -736,9 +801,9 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       [
         {
           content:
-            "> Minimum Charges. A-1 Residential (Rs-200/-) A-2-a Commercial ( Rs-450/-) E-1-i Temp (Rs-600/- ) PEAK / OFF PEAK TIMINGS",
+            "",
           colSpan: 5,
-          styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0 } },
+          styles: { lineWidth: { top: 0.1, right: 0.1, bottom: 0.1, left: 0 }},
         },
       ],
       [
@@ -811,63 +876,57 @@ export const generateNetMeteringPDF = (billingData, projects) => {
           styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } },
         },
       ],
+      // [
+      //   { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+      // ],
+      // [
+      //   { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+      // ],
+      // [
+      //   { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+      // ],
+      // [
+      //   { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+      // ],
+      // [
+      //   { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+      // ],
+      // [
+      //   { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+      // ],
       [
-        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+        { content: "Category", styles: {} , rowSpan: 2},
+        { content: "Max Permissible Export Units per Month",colSpan: 4, styles: {} }
       ],
       [
-        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+        { content: "Jul", styles: {} },
+        { content: "Aug", styles: {}, colSpan: 2  },
+        { content: "Sep", styles: {} },
       ],
       [
-        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+        { content: "5 Marla", styles: {} },
+        { content: "550", styles: {} },
+        { content: "550", styles: {}, colSpan: 2  },
+        { content: "500", styles: {} },
       ],
       [
-        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+        { content: "8 Marla", styles: {} },
+        { content: "660", styles: {} },
+        { content: "660", styles: {}, colSpan: 2  },
+        { content: "600", styles: {} },
       ],
       [
-        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+        { content: "10 Marla", styles: {} },
+        { content: "880", styles: {} },
+        { content: "880", styles: {}, colSpan: 2  },
+        { content: "800", styles: {} },
       ],
       [
-        { content: "", colSpan: 5 ,styles: { lineWidth: { top: 0, right: 0.1, bottom: 0, left: 0 } }}
+        { content: "Kanal & Above", styles: {} },
+        { content: "1320", styles: {} },
+        { content: "1320", styles: {}, colSpan: 2  },
+        { content: "1200", styles: {} },
       ]
-      // [
-      //   { content: "Category", styles: {} },
-      //   { content: "Max Permissible Export Units per Month",colSpan: 4, styles: {} }
-      // ],
-      // [
-      //   { content: "", styles: {} },
-      //   { content: "Mar", styles: {} },
-      //   { content: "Apr", styles: {} },
-      //   { content: "May", styles: {} },
-      //   { content: "June", styles: {} },
-      // ],
-      // [
-      //   { content: "5 Marla", styles: {} },
-      //   { content: "375", styles: {} },
-      //   { content: "375", styles: {} },
-      //   { content: "500", styles: {} },
-      //   { content: "500", styles: {} },
-      // ],
-      // [
-      //   { content: "8 Marla", styles: {} },
-      //   { content: "450", styles: {} },
-      //   { content: "450", styles: {} },
-      //   { content: "600", styles: {} },
-      //   { content: "600", styles: {} },
-      // ],
-      // [
-      //   { content: "10 Marla", styles: {} },
-      //   { content: "600", styles: {} },
-      //   { content: "600", styles: {} },
-      //   { content: "800", styles: {} },
-      //   { content: "800", styles: {} },
-      // ],
-      // [
-      //   { content: "Kanal & Above", styles: {} },
-      //   { content: "900", styles: {} },
-      //   { content: "900", styles: {} },
-      //   { content: "1200", styles: {} },
-      //   { content: "1200", styles: {} },
-      // ]
     ],
     theme: "grid",
     bodyStyles: {
@@ -881,10 +940,10 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     },
     columnStyles: {
       0: { cellWidth: 85 },
-      2: { cellWidth: 18 },
-      3: { cellWidth: 15 },
-      4: { cellWidth: 15 },
-      5: { cellWidth: 18 },
+      2: { cellWidth: 22 },
+      3: { cellWidth: 14 },
+      4: { cellWidth: 14 },
+      5: { cellWidth: 20 },
     },
     didParseCell: function (data) {
       if (data.section !== "body") return;
@@ -900,47 +959,47 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       // Helper to merge style properties
       const setCell = (styles) => Object.assign(cell.styles, styles);
 
-      if (r === 0 || r === 1 || r === 2 || r === 7) {
+      if (r === 0 || r === 1|| r === 6) {
         setCell({
           halign: "left",
         });
       }
-      if (r === 3 || r === 4 || r === 5 || r === 6) {
+      if (r === 2 || r === 3 || r === 4 || r === 5) {
         setCell({
           halign: "left",
           cellPadding: { top: 0.5, left: 3 },
         });
       }
-      if (r >= 8 && r <= 15) {
+      if (r >= 7 && r <= 14) {
         setCell({
           halign: "left",
           cellPadding: { top: 0.5, left: 1 },
         });
       }
-      if (r === 3) {
+      if (r === 2) {
         setCell({
           fillColor: "black",
           textColor: "white",
         });
       }
-      if (r === 1 || r === 2 || r === 8) {
+      if (r === 0 || r === 1 || r === 7) {
         setCell({
           fontStyle: "bold",
         });
       }
      
-      if (r === 7) {
+      if (r === 6) {
         setCell({
           cellPadding: { top: 0.2, bottom: 0.2 },
         });
       }
-       if (r >= 16 && r <= 21) {
+       if (r >= 15 && r <= 20) {
         setCell({
           cellPadding: {top:0.5,bottom:0.5},
           fontSize: 7
         });
       }
-       if ((c === 1 && r >= 16 && r <= 21) || r === 16 || r ===17) {
+       if ((c === 1 && r >= 15 && r <= 20) || r === 15 || r ===16) {
         setCell({
           fontStyle: "bold",
           
@@ -1124,25 +1183,26 @@ export const generateNetMeteringPDF = (billingData, projects) => {
     margin: { left: 131 },
     tableWidth: 64.75,
     body: [
-      ["Energy Charges", `-                 ${electricityBillsNetMeter.unitsAmount}`],
+      ["Energy Charges", `        ${electricityBillsNetMeter.unitsAmount}`],
       // [`OPC @ ${electricityBillsNetMeter.opcRate}    -    ${electricityBillsNetMeter.opc}`, `  GST    -    ${electricityBillsNetMeter.gst}`],
-      ["GST", `-                 ${electricityBillsNetMeter.gst}`],
-      [`OPC @ ${electricityBillsNetMeter.opcRate}`, `-                 ${electricityBillsNetMeter.opc}`],
-      ["Further Tax", `-                 ${electricityBillsNetMeter.furthertax}`],
-      ["Sales Tax", `-                 ${electricityBillsNetMeter.salesTax ?? ""}`],
-      ["Extra Tax", `-                 ${electricityBillsNetMeter.extraTax ?? ""}`],
-      ["Income Tax", `-                 ${electricityBillsNetMeter.incomeTax ?? ""}`],
-      [{ content: "FPA", styles: { fontSize: 7.5 } }, `-                 ${electricityBillsNetMeter.fpacharges}`],
-      ["NM(Cur-crdt)", `-                ${electricityBillsNetMeter.nmCurrentCredit}`],
-      ["NM(Pre-Crdt)", `-                ${electricityBillsNetMeter.nmPreviousCredit}`],
-      [{ content: "NM(Total-Crdt) Remaining", styles: { fontSize: 7.4 } }, `-                ${electricityBillsNetMeter.nmTotalCredit}`],
-      ["Current Bill", `-                 ${electricityBillsNetMeter.billAmount}`],
-      ["Arrears", `-                 ${electricityBillsNetMeter.arrears}`],
-      ["Total Payable", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`],
-      // ["Total Payable", `-                 ${electricityBillsNetMeter.billAmountInDueDate}`],
-      ["L.P Surcharge", `-                 ${electricityBillsNetMeter.billSurcharge}`],
-      ["Late Payment", `-                 ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`],
-      // ["Late Payment", `-                 ${electricityBillsNetMeter.billAmountAfterDueDate}`],
+      ["GST", `        ${electricityBillsNetMeter.gst}`],
+      [`OPC @ ${electricityBillsNetMeter.opcRate}`, `        ${electricityBillsNetMeter.opc}`],
+      ["Fixed Charges", `        ${electricityBillsNetMeter.ptvfee}`],
+      ["Further Tax", `        ${electricityBillsNetMeter.furthertax}`],
+      ["Sales Tax", `        ${electricityBillsNetMeter.salesTax ?? ""}`],
+      ["Extra Tax", `        ${electricityBillsNetMeter.extraTax ?? ""}`],
+      ["Income Tax", `        ${electricityBillsNetMeter.incomeTax ?? ""}`],
+      [{ content: `FPA ${electricityBillsNetMeter.fpaRate}`, styles: { fontSize: 7.5 } }, `        ${electricityBillsNetMeter.fpacharges}`],
+      ["NM(Cur-crdt)", `        ${electricityBillsNetMeter.nmCurrentCredit}`],
+      ["NM(Pre-Crdt)", `        ${electricityBillsNetMeter.nmPreviousCredit}`],
+      [{ content: "NM(Total-Crdt) Remaining", styles: { fontSize: 7.4 } }, `        ${electricityBillsNetMeter.nmTotalCredit}`],
+      ["Current Bill", `        ${electricityBillsNetMeter.billAmount}`],
+      ["Arrears", `        ${electricityBillsNetMeter.arrears}`],
+      ["Total Payable", `        ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountInDueDate}`],
+      // ["Total Payable", `        ${electricityBillsNetMeter.billAmountInDueDate}`],
+      ["L.P Surcharge", `        ${electricityBillsNetMeter.billSurcharge}`],
+      ["Late Payment", `        ${isCredit ? "CR " : ""}${electricityBillsNetMeter.billAmountAfterDueDate}`],
+      // ["Late Payment", `        ${electricityBillsNetMeter.billAmountAfterDueDate}`],
     ],
     theme: "grid",
     bodyStyles: {
@@ -1151,38 +1211,81 @@ export const generateNetMeteringPDF = (billingData, projects) => {
       valign: "middle",
       fillColor: false,
       fontSize:8,
-      cellPadding: 1.53
+      cellPadding: 1.15
     },
     columnStyles: {
-      0: { cellWidth: 33, lineWidth:{right:0, left:0.1, top:0.1, bottom:0.1} },
-      1: { lineWidth:{right:0.1, left:0, top:0.1, bottom:0.1} },
+      0: { cellWidth: 33, lineWidth:{right:0, left:0.1, top:0, bottom:0} },
+      1: { lineWidth:{right:0.1, left:0, top:0, bottom:0} },
     },
-  
+    didParseCell: function (data) {
+      if (data.section !== "body") return;
+
+      const {
+        row,
+        cell,
+      } = data;
+      const r = row.index;
+
+      // Helper to merge style properties
+      const setCell = (styles) => Object.assign(cell.styles, styles);
+
+      
+      if (r === 14 || r === 16) {
+        setCell({
+          fontStyle: "bold",
+        });
+      }
+    },
   });
 
   //Bank Account No (BTL Branch)
-  autoTable(doc, {
-    startY: headerY + 4,
-    margin: { left: 74.5 },
-    tableWidth: 55.5,
-    body: [
+  // autoTable(doc, {
+  //   startY: headerY + 3.5,
+  //   margin: { left: 74.5 },
+  //   tableWidth: 56.5,
+  //   body: [
       
-      [""],
-      ["Facilitation Center Bahria Mohlanwal (only Cash)"],
-      [""],
-      ["Facilitation Center Bahria Orchard (only Cash)"],
-      [""],
-      ["Bahria Orchard Head Office (only Cash)"],
-      [""],
+  //     ["Facilitation Center Bahria-Alfalah plaza(only Cash)"],
+  //     ["Facilitation Center Bahria Orchard (only Cash)"],
+  //     [""],
+  //     ["Corporate Head Office-Bahria Orchard (Only Cash)"],
+  //     [""],
+  //     ["Bill Collection Timing From"],
+  //     ["09:00 to 17:00 (Only Working Days)"],
+  //   ],
+  //   theme: "grid",
+  //   bodyStyles: {
+  //     textColor: [0, 0, 0],
+  //     lineColor: [0, 0, 0],
+  //     valign: "middle",
+  //     fontSize: 6.5,
+  //     cellPadding: { top: 0.5, bottom: 0.5 },
+  //     halign: "center",
+  //   },
+  // });
+  autoTable(doc, {
+    startY: headerY + 3.5,
+    margin: { left: 74 },
+    tableWidth: 56.5,
+
+    body: [
+      [
+        "Facilitation Center Bahria-Alfalah plaza (only Cash)\n" +
+        "Facilitation Center Bahria Orchard (only Cash)\n" +
+        "Corporate Head Office-Bahria Orchard (Only Cash)\n" +
+        "Bill Collection Timing From\n" +
+        "09:00 to 17:00 (Only Working Days)"
+      ]
     ],
+
     theme: "plain",
     bodyStyles: {
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       valign: "middle",
-      fontSize: 6.5,
-      cellPadding: { top: 0.5 },
-      halign: "left",
+      fontSize: 7.6,
+      cellPadding: { top: 1.5, bottom: 1.5 },
+      halign: "center",
     },
   });
 
@@ -1246,7 +1349,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
   // Images
   //doc.addImage("imageName", "type", x, y, width, height);
   doc.addImage("logo.png", "PNG", 15, 18, 18, 18);
-  doc.addImage("urdumessage3.png", "PNG", 21, duplicatelinkY + 49, 70, 14);
+  // doc.addImage("urdumessage3.png", "PNG", 21, duplicatelinkY + 49, 70, 14);
   doc.setFont("times", "normal");
   doc.setFontSize(12);
   doc.text("Note:", 21, duplicatelinkY + 48);
