@@ -210,8 +210,9 @@ const Billing = () => {
 
 
       // 🔧 Change base URL here manually
-      // const baseUrl = "https://localhost:7108/api";
-      const baseUrl = "https://lbillapi.softwaredemo.tech/api"; // deploy par ye use karein
+      // const baseUrl = "https://localhost:7108/api";   // localhost for testing
+      // const baseUrl = "https://lbillapi.softwaredemo.tech/api"; // GCP 
+      const baseUrl = "https://softwaredemo.tech:82/api";   // Lahore Cloud Server 
   
       
       
