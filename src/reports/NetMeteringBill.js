@@ -33,7 +33,7 @@ export const generateNetMeteringPDF = (billingData, projects) => {
   const imgData = canvas.toDataURL("image/png");
   doc.addImage(imgData, "PNG", 70, 272, 70, 14);
 
-  const isCredit = electricityBillsNetMeter.nmTotalCredit < 0;
+  const isCredit = String(electricityBillsNetMeter.signvalue).trim().toUpperCase() === "CR";
 
   // 🔹 Watermark: DUPLICATE BILL
   doc.saveGraphicsState(); // <-- save current graphics state
